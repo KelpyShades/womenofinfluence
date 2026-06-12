@@ -1,98 +1,95 @@
-import { ArrowRight, Heart, Handshake } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import AnimatedSection from "@/components/AnimatedSection";
-import SectionHeading from "@/components/SectionHeading";
 
 const Partnerships = () => {
   return (
-    <div className="pt-20">
-      <section className="section-padding gradient-hero text-center">
-        <div className="max-w-3xl mx-auto">
-          <AnimatedSection>
-            <span className="text-gold font-body font-semibold text-sm tracking-[0.2em] uppercase mb-4 block">Partnerships</span>
-            <h1 className="text-4xl sm:text-5xl lg:text-6xl font-display font-bold text-primary-foreground leading-tight mb-6">
-              Let's Build <span className="text-gradient-gold">Together</span>
-            </h1>
-            <p className="text-primary-foreground/70 font-body text-lg">
-              Partner with WIA to invest in the future of women's leadership and entrepreneurship.
-            </p>
-          </AnimatedSection>
-        </div>
+    <div className="bg-ivory min-h-screen font-body text-foreground overflow-hidden selection:bg-plum selection:text-white pt-32 pb-12">
+      <section className="px-6 lg:px-12 max-w-5xl mx-auto mb-24 text-center">
+        <AnimatedSection>
+          <span className="text-plum font-body text-xs tracking-[0.3em] uppercase mb-8 block">
+            Partnerships
+          </span>
+          <h1 className="text-5xl sm:text-6xl lg:text-7xl font-display font-medium text-foreground leading-[1.1] tracking-tight mb-8">
+            Let's Build <br/>
+            <span className="italic text-plum">Together.</span>
+          </h1>
+          <p className="text-lg sm:text-xl text-muted-foreground font-light leading-relaxed max-w-2xl mx-auto">
+            Partner with WIA to invest in the future of women's leadership and entrepreneurship.
+          </p>
+        </AnimatedSection>
       </section>
 
-      {/* Partner With Us */}
-      <section className="section-padding">
-        <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-10">
+      <section className="px-6 lg:px-12 max-w-6xl mx-auto mb-32">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-16">
           <AnimatedSection>
-            <div className="glass-card p-10 h-full">
-              <div className="w-14 h-14 rounded-2xl gradient-royal flex items-center justify-center mb-6">
-                <Handshake size={28} className="text-primary-foreground" />
-              </div>
-              <h2 className="font-display font-bold text-2xl mb-4 text-foreground">Partner With Us</h2>
-              <p className="text-muted-foreground font-body leading-relaxed mb-4">
-                We collaborate with organizations, corporations, and institutions that share our vision of empowering women. Partnership opportunities include:
+            <div className="border-t border-plum pt-8">
+              <h2 className="font-display font-medium text-3xl mb-6 text-foreground italic">Partner With Us</h2>
+              <p className="text-muted-foreground font-light text-lg leading-relaxed mb-8">
+                We collaborate with organizations, corporations, and institutions that share our vision of empowering women.
               </p>
-              <ul className="space-y-2 mb-6">
+              <ul className="space-y-4">
                 {[
                   "Co-creating training programs",
                   "Sponsoring cohorts and events",
                   "Providing mentorship and expertise",
                   "Corporate social responsibility initiatives",
                 ].map((item) => (
-                  <li key={item} className="flex items-start gap-2">
-                    <span className="w-1.5 h-1.5 rounded-full bg-gold mt-2 shrink-0" />
-                    <span className="text-muted-foreground font-body text-sm">{item}</span>
+                  <li key={item} className="flex items-start gap-4">
+                    <span className="text-plum font-body text-sm mt-1">/</span>
+                    <span className="text-foreground font-light">{item}</span>
                   </li>
                 ))}
               </ul>
             </div>
           </AnimatedSection>
+          
           <AnimatedSection delay={0.15}>
-            <div className="glass-card p-10 h-full">
-              <div className="w-14 h-14 rounded-2xl gradient-gold flex items-center justify-center mb-6">
-                <Heart size={28} className="text-foreground" />
-              </div>
-              <h2 className="font-display font-bold text-2xl mb-4 text-foreground">Sponsor a Woman</h2>
-              <p className="text-muted-foreground font-body leading-relaxed mb-4">
+            <div className="border-t border-plum pt-8 bg-white p-8 lg:p-12 shadow-sm">
+              <h2 className="font-display font-medium text-3xl mb-6 text-plum italic">Sponsor a Woman</h2>
+              <p className="text-muted-foreground font-light text-lg leading-relaxed mb-6">
                 Many talented women cannot afford the cost of education and mentorship. By sponsoring a woman, you directly invest in her future and her community.
               </p>
-              <p className="text-muted-foreground font-body leading-relaxed mb-4">
+              <p className="text-muted-foreground font-light text-lg leading-relaxed mb-10">
                 Your sponsorship covers tuition, learning materials, and access to our global network. Every sponsor receives updates on their scholar's progress.
               </p>
+              <button className="text-sm tracking-[0.1em] uppercase border-b border-plum pb-1 hover:text-plum transition-colors flex items-center gap-4 group">
+                Become a Sponsor <ArrowRight size={16} className="transform group-hover:translate-x-2 transition-transform" />
+              </button>
             </div>
           </AnimatedSection>
         </div>
       </section>
 
-      {/* Contact Form */}
-      <section className="section-padding bg-warm">
-        <div className="max-w-3xl mx-auto">
-          <SectionHeading label="Get Involved" title="Reach Out to Us" description="Fill out the form below and our partnerships team will get back to you." />
-          <AnimatedSection>
-            <form onSubmit={(e) => e.preventDefault()} className="glass-card p-10 space-y-5">
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+      {/* Form */}
+      <section className="px-6 lg:px-12 max-w-4xl mx-auto pb-32">
+        <AnimatedSection>
+          <div className="border border-border/40 p-8 lg:p-16 bg-white">
+            <h2 className="font-display font-medium text-4xl mb-2 text-center">Reach Out to Us</h2>
+            <p className="text-muted-foreground font-light text-center mb-12">Fill out the form below and our partnerships team will get back to you.</p>
+            
+            <form onSubmit={(e) => e.preventDefault()} className="space-y-8">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-8">
                 <div>
-                  <label className="block text-sm font-body font-medium text-foreground mb-1.5">Name *</label>
-                  <input required type="text" className="w-full px-4 py-3 rounded-lg border border-border bg-background text-foreground font-body text-sm focus:outline-none focus:ring-2 focus:ring-primary/30" />
+                  <input required type="text" placeholder="Name *" className="w-full pb-4 border-b border-border/40 bg-transparent text-foreground font-light text-lg focus:outline-none focus:border-plum placeholder:text-muted-foreground/50 transition-colors" />
                 </div>
                 <div>
-                  <label className="block text-sm font-body font-medium text-foreground mb-1.5">Organization</label>
-                  <input type="text" className="w-full px-4 py-3 rounded-lg border border-border bg-background text-foreground font-body text-sm focus:outline-none focus:ring-2 focus:ring-primary/30" />
+                  <input type="text" placeholder="Organization" className="w-full pb-4 border-b border-border/40 bg-transparent text-foreground font-light text-lg focus:outline-none focus:border-plum placeholder:text-muted-foreground/50 transition-colors" />
                 </div>
               </div>
               <div>
-                <label className="block text-sm font-body font-medium text-foreground mb-1.5">Email *</label>
-                <input required type="email" className="w-full px-4 py-3 rounded-lg border border-border bg-background text-foreground font-body text-sm focus:outline-none focus:ring-2 focus:ring-primary/30" />
+                <input required type="email" placeholder="Email *" className="w-full pb-4 border-b border-border/40 bg-transparent text-foreground font-light text-lg focus:outline-none focus:border-plum placeholder:text-muted-foreground/50 transition-colors" />
               </div>
               <div>
-                <label className="block text-sm font-body font-medium text-foreground mb-1.5">How would you like to partner? *</label>
-                <textarea required rows={4} className="w-full px-4 py-3 rounded-lg border border-border bg-background text-foreground font-body text-sm focus:outline-none focus:ring-2 focus:ring-primary/30 resize-none" />
+                <textarea required rows={4} placeholder="How would you like to partner? *" className="w-full pb-4 border-b border-border/40 bg-transparent text-foreground font-light text-lg focus:outline-none focus:border-plum placeholder:text-muted-foreground/50 transition-colors resize-none" />
               </div>
-              <button type="submit" className="btn-primary text-sm">
-                Send Message <ArrowRight size={16} className="ml-2 inline" />
-              </button>
+              <div className="pt-4 text-center">
+                <button type="submit" className="text-sm tracking-[0.1em] uppercase border-b border-plum pb-1 hover:text-plum transition-colors inline-flex items-center gap-4 group">
+                  Send Message <ArrowRight size={16} className="transform group-hover:translate-x-2 transition-transform" />
+                </button>
+              </div>
             </form>
-          </AnimatedSection>
-        </div>
+          </div>
+        </AnimatedSection>
       </section>
     </div>
   );

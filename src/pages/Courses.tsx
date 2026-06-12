@@ -1,70 +1,60 @@
-import { Clock, User, ArrowRight } from "lucide-react";
+import { ArrowRight } from "lucide-react";
+import { Link } from "react-router-dom";
 import AnimatedSection from "@/components/AnimatedSection";
-import SectionHeading from "@/components/SectionHeading";
 
 const courses = [
   {
-    title: "Leadership Foundations",
-    description: "Master the fundamentals of effective leadership, decision-making, and team management. This course empowers you to lead with vision and purpose.",
-    duration: "8 Weeks",
-    instructor: "Dr. Amina Keita",
+    title: "Influence Bootcamp",
+    description: "6-week intensive for emerging women leaders to overcome imposter syndrome and lead with conviction.",
+    price: "GH₵ 500",
   },
   {
-    title: "Personal Branding",
-    description: "Learn how to build a powerful personal brand that communicates your value, attracts opportunities, and positions you as a thought leader.",
-    duration: "6 Weeks",
-    instructor: "Rachel Okonkwo",
-  },
-  {
-    title: "Business Development",
-    description: "From idea validation to scaling, learn the strategies and frameworks to build a profitable and sustainable business.",
-    duration: "10 Weeks",
-    instructor: "Maria Santos",
-  },
-  {
-    title: "Digital Skills for Women",
-    description: "Gain essential digital skills including social media marketing, data analytics, and digital tools that drive modern business growth.",
-    duration: "6 Weeks",
-    instructor: "Fatima Al-Hassan",
+    title: "Business Accelerator",
+    description: "Build and scale your business with expert mentors, data-driven strategies, and global networking.",
+    price: "GH₵ 800",
   },
 ];
 
 const Courses = () => {
   return (
-    <div className="pt-20">
-      <section className="section-padding gradient-hero text-center">
-        <div className="max-w-3xl mx-auto">
-          <AnimatedSection>
-            <span className="text-gold font-body font-semibold text-sm tracking-[0.2em] uppercase mb-4 block">Our Courses</span>
-            <h1 className="text-4xl sm:text-5xl lg:text-6xl font-display font-bold text-primary-foreground leading-tight mb-6">
-              Learn. Grow. <span className="text-gradient-gold">Lead.</span>
-            </h1>
-            <p className="text-primary-foreground/70 font-body text-lg">
-              Expert-led courses designed to accelerate your personal and professional growth.
-            </p>
-          </AnimatedSection>
-        </div>
+    <div className="bg-ivory min-h-screen font-body text-foreground overflow-hidden selection:bg-plum selection:text-white pt-32 pb-12">
+      <section className="px-6 lg:px-12 max-w-5xl mx-auto mb-24 text-center">
+        <AnimatedSection>
+          <span className="text-plum font-body text-xs tracking-[0.3em] uppercase mb-8 block">
+            Our Programs
+          </span>
+          <h1 className="text-5xl sm:text-6xl lg:text-7xl font-display font-medium text-foreground leading-[1.1] tracking-tight mb-8">
+            Learn. Grow. <br/>
+            <span className="italic text-plum">Lead.</span>
+          </h1>
+          <p className="text-lg sm:text-xl text-muted-foreground font-light leading-relaxed max-w-2xl mx-auto">
+            Expert-led programs designed to accelerate your personal and professional growth.
+          </p>
+        </AnimatedSection>
       </section>
 
-      <section className="section-padding">
-        <div className="max-w-7xl mx-auto">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            {courses.map((course, i) => (
-              <AnimatedSection key={course.title} delay={i * 0.1}>
-                <div className="glass-card p-8 hover-lift h-full flex flex-col">
-                  <h3 className="font-display font-bold text-2xl mb-3 text-foreground">{course.title}</h3>
-                  <p className="text-muted-foreground font-body text-sm leading-relaxed mb-6 flex-1">{course.description}</p>
-                  <div className="flex items-center gap-4 mb-6 text-sm font-body text-muted-foreground">
-                    <span className="flex items-center gap-1.5"><Clock size={14} /> {course.duration}</span>
-                    <span className="flex items-center gap-1.5"><User size={14} /> {course.instructor}</span>
+      <section className="px-6 lg:px-12 max-w-4xl mx-auto pb-32">
+        <div className="flex flex-col gap-12">
+          {courses.map((course, i) => (
+            <AnimatedSection key={course.title} delay={i * 0.1}>
+              <div className="bg-white p-8 lg:p-12 border border-border/40 hover:border-plum transition-colors duration-500">
+                <div className="flex flex-col md:flex-row md:items-end justify-between gap-8">
+                  <div className="flex-1">
+                    <h3 className="font-display font-medium text-3xl mb-4 text-plum italic">{course.title}</h3>
+                    <p className="text-muted-foreground font-light text-lg leading-relaxed max-w-lg">{course.description}</p>
                   </div>
-                  <button className="btn-primary text-sm self-start">
-                    Enroll Now <ArrowRight size={16} className="ml-2 inline" />
-                  </button>
+                  <div className="flex flex-col items-start md:items-end gap-6 shrink-0">
+                    <div className="font-display text-3xl text-foreground">
+                      {course.price}
+                    </div>
+                    <Link to={`/apply?course=${encodeURIComponent(course.title)}`} className="group flex items-center gap-4 text-sm tracking-[0.1em] uppercase border-b border-plum pb-1 hover:text-plum transition-colors">
+                      Enroll Now <ArrowRight size={16} className="transform group-hover:translate-x-2 transition-transform" />
+                    </Link>
+                  </div>
                 </div>
-              </AnimatedSection>
-            ))}
-          </div>
+              </div>
+            </AnimatedSection>
+          ))}
         </div>
       </section>
     </div>

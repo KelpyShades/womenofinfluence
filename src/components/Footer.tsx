@@ -9,10 +9,21 @@ const Footer = () => {
           {/* About */}
           <div>
             <div className="flex items-center gap-2 mb-4">
-              <div className="w-10 h-10 rounded-full bg-primary-foreground/20 flex items-center justify-center">
-                <span className="font-display font-bold text-primary-foreground text-lg">W</span>
+              <img 
+                src="/logo.png" 
+                alt="Women of Influence Academy" 
+                className="h-10 w-auto object-contain brightness-0 invert"
+                onError={(e) => {
+                  e.currentTarget.style.display = 'none';
+                  e.currentTarget.nextElementSibling?.classList.remove('hidden');
+                }}
+              />
+              <div className="hidden flex items-center gap-2">
+                <div className="w-10 h-10 rounded-full bg-primary-foreground/20 flex items-center justify-center">
+                  <span className="font-display font-bold text-primary-foreground text-lg">W</span>
+                </div>
+                <span className="font-display font-bold text-lg">WIA</span>
               </div>
-              <span className="font-display font-bold text-lg">WIA</span>
             </div>
             <p className="text-primary-foreground/70 text-sm font-body leading-relaxed">
               Women of Influence Academy empowers women through mentorship, education, and community to build impactful careers and businesses.
@@ -24,11 +35,14 @@ const Footer = () => {
             <h4 className="font-display font-semibold text-lg mb-4">Quick Links</h4>
             <ul className="space-y-2.5">
               {[
-                { name: "About Us", path: "/about" },
-                { name: "Courses", path: "/courses" },
-                { name: "Apply Now", path: "/apply" },
-                { name: "Resources", path: "/resources" },
+                { name: "Programs", path: "/courses" },
+                { name: "Gallery", path: "/gallery" },
+                { name: "Community", path: "/resources" },
+                { name: "Testimonials", path: "/testimonials" },
+                { name: "Businesses", path: "/businesses" },
                 { name: "Partnerships", path: "/partnerships" },
+                { name: "About Us", path: "/about" },
+                { name: "Apply Now", path: "/apply" },
               ].map((link) => (
                 <li key={link.path}>
                   <Link

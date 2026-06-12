@@ -4,13 +4,13 @@ import { Menu, X } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 
 const navLinks = [
-  { name: "Home", path: "/" },
-  { name: "About", path: "/about" },
-  { name: "Courses", path: "/courses" },
+  { name: "Programs", path: "/courses" },
+  { name: "Gallery", path: "/gallery" },
+  { name: "Community", path: "/resources" },
   { name: "Testimonials", path: "/testimonials" },
   { name: "Businesses", path: "/businesses" },
-  { name: "Resources", path: "/resources" },
   { name: "Partnerships", path: "/partnerships" },
+  { name: "About", path: "/about" },
 ];
 
 const Navbar = () => {
@@ -39,12 +39,25 @@ const Navbar = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16 lg:h-20">
           <Link to="/" className="flex items-center gap-2">
-            <div className="w-10 h-10 rounded-full gradient-royal flex items-center justify-center">
-              <span className="font-display font-bold text-primary-foreground text-lg">W</span>
+            {/* Placeholder for the user's gold logo without background */}
+            <img 
+              src="/logo.png" 
+              alt="Women of Influence Academy" 
+              className="h-10 w-auto object-contain"
+              onError={(e) => {
+                // Fallback if logo.png doesn't exist yet
+                e.currentTarget.style.display = 'none';
+                e.currentTarget.nextElementSibling?.classList.remove('hidden');
+              }}
+            />
+            <div className="hidden flex items-center gap-2">
+              <div className="w-10 h-10 rounded-full gradient-plum flex items-center justify-center">
+                <span className="font-display font-bold text-primary-foreground text-lg">W</span>
+              </div>
+              <span className="font-display font-bold text-lg text-foreground">
+                WIA
+              </span>
             </div>
-            <span className="font-display font-bold text-lg text-foreground">
-              WIA
-            </span>
           </Link>
 
           {/* Desktop nav */}
@@ -53,16 +66,16 @@ const Navbar = () => {
               <Link
                 key={link.path}
                 to={link.path}
-                className={`px-3 py-2 rounded-lg text-sm font-body font-medium transition-colors duration-200 ${
+                className={`px-3 py-2 rounded-lg text-sm font-body font-medium uppercase tracking-wider transition-colors duration-200 ${
                   location.pathname === link.path
-                    ? "text-primary bg-royal-light"
+                    ? "text-primary bg-plum/10"
                     : "text-muted-foreground hover:text-foreground hover:bg-muted"
                 }`}
               >
                 {link.name}
               </Link>
             ))}
-            <Link to="/apply" className="btn-primary ml-3 text-sm px-6 py-2.5">
+            <Link to="/apply" className="btn-gold ml-3 text-sm px-6 py-2.5 uppercase tracking-wider">
               Apply Now
             </Link>
           </div>
@@ -84,16 +97,16 @@ const Navbar = () => {
             initial={{ opacity: 0, height: 0 }}
             animate={{ opacity: 1, height: "auto" }}
             exit={{ opacity: 0, height: 0 }}
-            className="lg:hidden bg-background/98 backdrop-blur-md border-b border-border"
+            className="lg:hidden bg-background/98 backdrop-blur-md border-b border-border overflow-hidden"
           >
             <div className="px-4 py-4 space-y-1">
               {navLinks.map((link) => (
                 <Link
                   key={link.path}
                   to={link.path}
-                  className={`block px-4 py-3 rounded-lg text-sm font-body font-medium transition-colors ${
+                  className={`block px-4 py-3 rounded-lg text-sm font-body font-medium uppercase tracking-wider transition-colors ${
                     location.pathname === link.path
-                      ? "text-primary bg-royal-light"
+                      ? "text-primary bg-plum/10"
                       : "text-muted-foreground hover:text-foreground hover:bg-muted"
                   }`}
                 >
@@ -102,7 +115,7 @@ const Navbar = () => {
               ))}
               <Link
                 to="/apply"
-                className="block text-center btn-primary mt-3 text-sm px-6 py-3"
+                className="block text-center btn-gold mt-3 text-sm px-6 py-3 uppercase tracking-wider"
               >
                 Apply Now
               </Link>

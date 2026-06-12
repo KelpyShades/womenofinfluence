@@ -1,52 +1,60 @@
-import { ExternalLink } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import AnimatedSection from "@/components/AnimatedSection";
-import SectionHeading from "@/components/SectionHeading";
 
 const businesses = [
-  { name: "AfriTech Solutions", founder: "Amara Osei", description: "An ed-tech platform providing accessible digital learning across West Africa, serving over 50,000 students.", website: "#" },
-  { name: "Bloom Skincare", founder: "Lily Chen", description: "A clean beauty brand by women, for women. Now available in 8 countries with sustainable, eco-friendly products.", website: "#" },
-  { name: "EmpowerHer Finance", founder: "Fatou Diallo", description: "A financial literacy platform helping women in Africa build wealth through smart investing and budgeting tools.", website: "#" },
-  { name: "Verde Social Impact", founder: "Maria Gonzalez", description: "A social enterprise consultancy helping nonprofits and NGOs maximize their community impact through data-driven strategies.", website: "#" },
-  { name: "MamaPreneurs", founder: "Priya Sharma", description: "A community marketplace connecting mom entrepreneurs with customers who value handmade, sustainable products.", website: "#" },
-  { name: "LeadHer Consulting", founder: "Hannah Kim", description: "Executive coaching and leadership development firm focused on helping women break through the glass ceiling.", website: "#" },
+  { name: "AfriTech Solutions", founder: "Amara Osei", description: "An ed-tech platform providing accessible digital learning across West Africa, serving over 50,000 students.", website: "#", image: "https://images.unsplash.com/photo-1516321318423-f06f85e504b3?auto=format&fit=crop&w=600&q=80" },
+  { name: "Bloom Skincare", founder: "Lily Chen", description: "A clean beauty brand by women, for women. Now available in 8 countries with sustainable, eco-friendly products.", website: "#", image: "https://images.unsplash.com/photo-1556228578-0d85b1a4d571?auto=format&fit=crop&w=600&q=80" },
+  { name: "EmpowerHer Finance", founder: "Fatou Diallo", description: "A financial literacy platform helping women in Africa build wealth through smart investing and budgeting tools.", website: "#", image: "https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&w=600&q=80" },
+  { name: "Verde Social Impact", founder: "Maria Gonzalez", description: "A social enterprise consultancy helping nonprofits and NGOs maximize their community impact.", website: "#", image: "https://images.unsplash.com/photo-1542744173-8e7e53415bb0?auto=format&fit=crop&w=600&q=80" },
 ];
 
 const Businesses = () => {
   return (
-    <div className="pt-20">
-      <section className="section-padding gradient-hero text-center">
-        <div className="max-w-3xl mx-auto">
-          <AnimatedSection>
-            <span className="text-gold font-body font-semibold text-sm tracking-[0.2em] uppercase mb-4 block">Alumni Businesses</span>
-            <h1 className="text-4xl sm:text-5xl lg:text-6xl font-display font-bold text-primary-foreground leading-tight mb-6">
-              Businesses Built by <span className="text-gradient-gold">Our Women</span>
-            </h1>
-            <p className="text-primary-foreground/70 font-body text-lg">
-              Discover the incredible businesses launched by WIA alumni from around the world.
-            </p>
-          </AnimatedSection>
-        </div>
+    <div className="bg-ivory min-h-screen font-body text-foreground overflow-hidden selection:bg-plum selection:text-white pt-32 pb-12">
+      <section className="px-6 lg:px-12 max-w-5xl mx-auto mb-24">
+        <AnimatedSection>
+          <span className="text-plum font-body text-xs tracking-[0.3em] uppercase mb-8 block">
+            Alumni Businesses
+          </span>
+          <h1 className="text-5xl sm:text-6xl lg:text-7xl font-display font-medium text-foreground leading-[1.1] tracking-tight mb-8">
+            Empires Built <br/>
+            <span className="italic text-plum">By Women.</span>
+          </h1>
+          <p className="text-lg sm:text-xl text-muted-foreground font-light leading-relaxed max-w-2xl">
+            Discover the incredible businesses, nonprofits, and movements launched by WIA alumni from around the world.
+          </p>
+        </AnimatedSection>
       </section>
 
-      <section className="section-padding">
-        <div className="max-w-7xl mx-auto">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {businesses.map((b, i) => (
-              <AnimatedSection key={b.name} delay={i * 0.08}>
-                <div className="glass-card p-8 hover-lift h-full flex flex-col">
-                  <div className="w-12 h-12 rounded-full gradient-royal flex items-center justify-center mb-5">
-                    <span className="font-display font-bold text-primary-foreground text-lg">{b.name[0]}</span>
+      <section className="px-6 lg:px-12 max-w-[1400px] mx-auto pb-32">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-x-16 gap-y-24">
+          {businesses.map((b, i) => (
+            <AnimatedSection key={b.name} delay={i * 0.1}>
+              <div className="group flex flex-col md:flex-row gap-8">
+                <div className="md:w-1/2 relative overflow-hidden shrink-0 border border-border/40">
+                  <div className="aspect-[4/5] w-full">
+                    <img 
+                      src={b.image} 
+                      alt={b.name} 
+                      className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-105 grayscale group-hover:grayscale-0"
+                    />
                   </div>
-                  <h3 className="font-display font-bold text-xl mb-1 text-foreground">{b.name}</h3>
-                  <p className="text-accent font-body text-sm font-medium mb-3">Founded by {b.founder}</p>
-                  <p className="text-muted-foreground font-body text-sm leading-relaxed mb-6 flex-1">{b.description}</p>
-                  <a href={b.website} className="inline-flex items-center gap-1.5 text-primary font-body text-sm font-medium hover:underline">
-                    Visit Website <ExternalLink size={14} />
+                </div>
+                <div className="md:w-1/2 flex flex-col justify-center">
+                  <span className="text-muted-foreground font-body text-xs tracking-[0.2em] uppercase mb-4 block">
+                    Founded by {b.founder}
+                  </span>
+                  <h3 className="font-display font-medium text-3xl text-foreground mb-6 italic">{b.name}</h3>
+                  <p className="text-muted-foreground font-light leading-relaxed mb-8">
+                    {b.description}
+                  </p>
+                  <a href={b.website} className="inline-flex items-center gap-4 text-xs tracking-[0.1em] uppercase border-b border-plum pb-1 hover:text-plum transition-colors w-max">
+                    Visit Website <ArrowRight size={14} className="transform group-hover:translate-x-2 transition-transform" />
                   </a>
                 </div>
-              </AnimatedSection>
-            ))}
-          </div>
+              </div>
+            </AnimatedSection>
+          ))}
         </div>
       </section>
     </div>

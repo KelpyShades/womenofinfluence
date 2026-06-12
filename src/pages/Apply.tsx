@@ -1,116 +1,144 @@
-import { useState } from "react";
-import { ArrowRight, CalendarDays } from "lucide-react";
+import { useState, useEffect } from "react";
+import { useLocation, Link } from "react-router-dom";
+import { Lock, CheckSquare, Mail, CreditCard, Smartphone } from "lucide-react";
 import AnimatedSection from "@/components/AnimatedSection";
-import SectionHeading from "@/components/SectionHeading";
+
+const coursesData = {
+  "Influence Bootcamp": { price: "GH₵ 500" },
+  "Business Accelerator": { price: "GH₵ 800" },
+};
 
 const Apply = () => {
-  const [submitted, setSubmitted] = useState(false);
+  const location = useLocation();
+  const [courseName, setCourseName] = useState("Influence Bootcamp");
+  const [price, setPrice] = useState("GH₵ 500");
+  const [paymentMethod, setPaymentMethod] = useState("momo");
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    setSubmitted(true);
-  };
+  useEffect(() => {
+    const searchParams = new URLSearchParams(location.search);
+    const course = searchParams.get("course");
+    if (course && course in coursesData) {
+      setCourseName(course);
+      setPrice(coursesData[course as keyof typeof coursesData].price);
+    }
+  }, [location.search]);
 
   return (
-    <div className="pt-20">
-      <section className="section-padding gradient-hero text-center">
-        <div className="max-w-3xl mx-auto">
-          <AnimatedSection>
-            <span className="text-gold font-body font-semibold text-sm tracking-[0.2em] uppercase mb-4 block">Apply Now</span>
-            <h1 className="text-4xl sm:text-5xl lg:text-6xl font-display font-bold text-primary-foreground leading-tight mb-6">
-              Your Journey <span className="text-gradient-gold">Starts Here</span>
-            </h1>
-            <p className="text-primary-foreground/70 font-body text-lg">
-              Take the first step toward becoming a woman of influence. Apply for our next cohort.
-            </p>
-          </AnimatedSection>
-        </div>
-      </section>
-
-      {/* Batch Timeline */}
-      <section className="section-padding bg-warm">
-        <div className="max-w-4xl mx-auto">
-          <SectionHeading label="Upcoming Cohorts" title="Batch Timeline" />
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
-            {[
-              { batch: "Cohort 12", date: "April 2026", status: "Applications Open" },
-              { batch: "Cohort 13", date: "July 2026", status: "Coming Soon" },
-              { batch: "Cohort 14", date: "October 2026", status: "Coming Soon" },
-            ].map((b, i) => (
-              <AnimatedSection key={b.batch} delay={i * 0.1}>
-                <div className="glass-card p-6 text-center hover-lift">
-                  <CalendarDays size={24} className="text-primary mx-auto mb-3" />
-                  <h3 className="font-display font-bold text-lg text-foreground">{b.batch}</h3>
-                  <p className="text-muted-foreground font-body text-sm mb-2">{b.date}</p>
-                  <span className={`inline-block text-xs font-body font-semibold px-3 py-1 rounded-full ${
-                    b.status === "Applications Open" ? "bg-gold/20 text-gold-dark" : "bg-muted text-muted-foreground"
-                  }`}>
-                    {b.status}
-                  </span>
-                </div>
-              </AnimatedSection>
-            ))}
+    <div className="pt-20 bg-ivory min-h-screen pb-24">
+      <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 mt-12">
+        <AnimatedSection>
+          {/* Order Summary */}
+          <div className="bg-cream rounded-t-[2rem] p-8 border-b border-border/50 shadow-sm">
+            <h2 className="font-display font-bold text-2xl text-foreground mb-6">Order Summary</h2>
+            <div className="flex justify-between items-center mb-6">
+              <span className="font-body text-muted-foreground">{courseName}</span>
+              <span className="font-body font-bold text-foreground">{price}</span>
+            </div>
+            
+            <div className="flex gap-4">
+              <input 
+                type="text" 
+                placeholder="Promo code" 
+                className="flex-1 px-4 py-3 rounded-lg border border-border bg-white text-foreground font-body text-sm focus:outline-none focus:ring-2 focus:ring-plum/30"
+              />
+              <button className="bg-champagne text-white px-6 py-3 rounded-lg font-body font-semibold text-sm hover:bg-soft-gold transition-colors">
+                Apply
+              </button>
+            </div>
           </div>
-        </div>
-      </section>
 
-      {/* Application Form */}
-      <section className="section-padding">
-        <div className="max-w-3xl mx-auto">
-          <SectionHeading label="Application Form" title="Tell Us About Yourself" />
-          {submitted ? (
-            <AnimatedSection>
-              <div className="glass-card p-10 text-center">
-                <div className="w-16 h-16 rounded-full gradient-gold flex items-center justify-center mx-auto mb-6">
-                  <ArrowRight size={28} className="text-foreground" />
-                </div>
-                <h3 className="font-display font-bold text-2xl mb-3 text-foreground">Application Received!</h3>
-                <p className="text-muted-foreground font-body">Thank you for applying. We'll review your application and get back to you within 7 days.</p>
+          {/* Payment Details */}
+          <div className="bg-white rounded-b-[2rem] p-8 shadow-sm">
+            <h3 className="font-display font-bold text-lg text-plum mb-6 uppercase tracking-wider">Payment Details</h3>
+            
+            <form className="space-y-6" onSubmit={(e) => e.preventDefault()}>
+              <div>
+                <label className="block text-xs font-body font-semibold text-muted-foreground mb-1.5 uppercase tracking-wider">Full Name</label>
+                <input type="text" placeholder="Akosua Mensah" className="w-full px-4 py-3 rounded-lg border border-border bg-cream/50 text-foreground font-body text-sm focus:outline-none focus:ring-2 focus:ring-plum/30" />
               </div>
-            </AnimatedSection>
-          ) : (
-            <AnimatedSection>
-              <form onSubmit={handleSubmit} className="glass-card p-10 space-y-5">
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  <div>
-                    <label className="block text-sm font-body font-medium text-foreground mb-1.5">Full Name *</label>
-                    <input required type="text" className="w-full px-4 py-3 rounded-lg border border-border bg-background text-foreground font-body text-sm focus:outline-none focus:ring-2 focus:ring-primary/30" />
-                  </div>
-                  <div>
-                    <label className="block text-sm font-body font-medium text-foreground mb-1.5">Email *</label>
-                    <input required type="email" className="w-full px-4 py-3 rounded-lg border border-border bg-background text-foreground font-body text-sm focus:outline-none focus:ring-2 focus:ring-primary/30" />
-                  </div>
-                </div>
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  <div>
-                    <label className="block text-sm font-body font-medium text-foreground mb-1.5">Phone</label>
-                    <input type="tel" className="w-full px-4 py-3 rounded-lg border border-border bg-background text-foreground font-body text-sm focus:outline-none focus:ring-2 focus:ring-primary/30" />
-                  </div>
-                  <div>
-                    <label className="block text-sm font-body font-medium text-foreground mb-1.5">Country *</label>
-                    <input required type="text" className="w-full px-4 py-3 rounded-lg border border-border bg-background text-foreground font-body text-sm focus:outline-none focus:ring-2 focus:ring-primary/30" />
-                  </div>
-                </div>
-                <div>
-                  <label className="block text-sm font-body font-medium text-foreground mb-1.5">Profession</label>
-                  <input type="text" className="w-full px-4 py-3 rounded-lg border border-border bg-background text-foreground font-body text-sm focus:outline-none focus:ring-2 focus:ring-primary/30" />
-                </div>
-                <div>
-                  <label className="block text-sm font-body font-medium text-foreground mb-1.5">Why do you want to join WIA? *</label>
-                  <textarea required rows={4} className="w-full px-4 py-3 rounded-lg border border-border bg-background text-foreground font-body text-sm focus:outline-none focus:ring-2 focus:ring-primary/30 resize-none" />
-                </div>
-                <div className="flex items-center gap-2">
-                  <input type="checkbox" id="newsletter" className="rounded border-border" />
-                  <label htmlFor="newsletter" className="text-sm font-body text-muted-foreground">Subscribe to our newsletter</label>
-                </div>
-                <button type="submit" className="btn-primary text-sm w-full sm:w-auto">
-                  Submit Application <ArrowRight size={16} className="ml-2 inline" />
+              
+              <div>
+                <label className="block text-xs font-body font-semibold text-muted-foreground mb-1.5 uppercase tracking-wider">Email</label>
+                <input type="email" placeholder="akosua@email.com" className="w-full px-4 py-3 rounded-lg border border-border bg-cream/50 text-foreground font-body text-sm focus:outline-none focus:ring-2 focus:ring-plum/30" />
+              </div>
+
+              {/* Payment Tabs */}
+              <div className="flex rounded-lg border border-border overflow-hidden">
+                <button 
+                  type="button"
+                  onClick={() => setPaymentMethod("momo")}
+                  className={`flex-1 py-3 flex items-center justify-center gap-2 font-body text-sm font-semibold transition-colors ${paymentMethod === 'momo' ? 'bg-plum text-white' : 'bg-cream/50 text-muted-foreground hover:bg-cream'}`}
+                >
+                  <Smartphone size={16} /> Mobile Money
                 </button>
-              </form>
-            </AnimatedSection>
-          )}
-        </div>
-      </section>
+                <button 
+                  type="button"
+                  onClick={() => setPaymentMethod("card")}
+                  className={`flex-1 py-3 flex items-center justify-center gap-2 font-body text-sm font-semibold transition-colors ${paymentMethod === 'card' ? 'bg-plum text-white' : 'bg-cream/50 text-muted-foreground hover:bg-cream'}`}
+                >
+                  <CreditCard size={16} /> Card
+                </button>
+              </div>
+
+              {paymentMethod === "momo" && (
+                <>
+                  <div>
+                    <label className="block text-xs font-body font-semibold text-muted-foreground mb-1.5 uppercase tracking-wider">Network</label>
+                    <select className="w-full px-4 py-3 rounded-lg border border-border bg-cream/50 text-foreground font-body text-sm focus:outline-none focus:ring-2 focus:ring-plum/30 appearance-none">
+                      <option>MTN Mobile Money</option>
+                      <option>Vodafone Cash</option>
+                      <option>AirtelTigo Money</option>
+                    </select>
+                  </div>
+                  <div>
+                    <label className="block text-xs font-body font-semibold text-muted-foreground mb-1.5 uppercase tracking-wider">Mobile Number</label>
+                    <input type="tel" placeholder="024 000 0000" className="w-full px-4 py-3 rounded-lg border border-border bg-cream/50 text-foreground font-body text-sm focus:outline-none focus:ring-2 focus:ring-plum/30" />
+                  </div>
+                </>
+              )}
+
+              {paymentMethod === "card" && (
+                <>
+                  <div>
+                    <label className="block text-xs font-body font-semibold text-muted-foreground mb-1.5 uppercase tracking-wider">Card Number</label>
+                    <input type="text" placeholder="0000 0000 0000 0000" className="w-full px-4 py-3 rounded-lg border border-border bg-cream/50 text-foreground font-body text-sm focus:outline-none focus:ring-2 focus:ring-plum/30" />
+                  </div>
+                  <div className="flex gap-4">
+                    <div className="flex-1">
+                      <label className="block text-xs font-body font-semibold text-muted-foreground mb-1.5 uppercase tracking-wider">Expiry</label>
+                      <input type="text" placeholder="MM/YY" className="w-full px-4 py-3 rounded-lg border border-border bg-cream/50 text-foreground font-body text-sm focus:outline-none focus:ring-2 focus:ring-plum/30" />
+                    </div>
+                    <div className="flex-1">
+                      <label className="block text-xs font-body font-semibold text-muted-foreground mb-1.5 uppercase tracking-wider">CVV</label>
+                      <input type="text" placeholder="123" className="w-full px-4 py-3 rounded-lg border border-border bg-cream/50 text-foreground font-body text-sm focus:outline-none focus:ring-2 focus:ring-plum/30" />
+                    </div>
+                  </div>
+                </>
+              )}
+
+              <button type="submit" className="w-full bg-champagne hover:bg-soft-gold text-foreground font-display font-bold py-4 rounded-lg flex justify-center items-center gap-2 transition-colors duration-300 mt-4 shadow-sm">
+                PAY NOW & SECURE MY SPOT <span className="text-lg">→</span>
+              </button>
+            </form>
+          </div>
+
+          {/* Trust Indicators */}
+          <div className="flex justify-between items-center mt-8 px-4 sm:px-12 text-center">
+            <div className="flex flex-col items-center gap-2">
+              <Lock size={24} className="text-gold" />
+              <span className="font-body text-xs text-muted-foreground">Secure Payment</span>
+            </div>
+            <div className="flex flex-col items-center gap-2">
+              <CheckSquare size={24} className="text-green-500" />
+              <span className="font-body text-xs text-muted-foreground">Instant Confirmation</span>
+            </div>
+            <div className="flex flex-col items-center gap-2">
+              <Mail size={24} className="text-blue-400" />
+              <span className="font-body text-xs text-muted-foreground">Receipt to Email</span>
+            </div>
+          </div>
+        </AnimatedSection>
+      </div>
     </div>
   );
 };

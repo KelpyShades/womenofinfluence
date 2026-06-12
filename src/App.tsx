@@ -10,6 +10,7 @@ import About from "./pages/About";
 import Courses from "./pages/Courses";
 import Apply from "./pages/Apply";
 import Testimonials from "./pages/Testimonials";
+import Gallery from "./pages/Gallery";
 import Businesses from "./pages/Businesses";
 import Resources from "./pages/Resources";
 import Partnerships from "./pages/Partnerships";
@@ -28,6 +29,7 @@ const App = () => (
           <Route path="/" element={<Index />} />
           <Route path="/about" element={<About />} />
           <Route path="/courses" element={<Courses />} />
+          <Route path="/gallery" element={<Gallery />} />
           <Route path="/apply" element={<Apply />} />
           <Route path="/testimonials" element={<Testimonials />} />
           <Route path="/businesses" element={<Businesses />} />
