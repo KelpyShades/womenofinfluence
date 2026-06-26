@@ -1,0 +1,198 @@
+"use client";
+
+import { useState } from "react";
+import { ArrowRight, ShieldCheck, CheckCircle2 } from "lucide-react";
+import AnimatedSection from "@/components/AnimatedSection";
+
+const sponsorTiers = {
+  "Sponsor a Scholar (Tuition Only)": { price: 500, desc: "Covers standard academic tuition and core learning materials for 6 months." },
+  "Sponsor a Scholar (Full Experience)": { price: 800, desc: "Covers tuition, materials, and the cohort trip to Accra." },
+  "Custom Contribution": { price: 0, desc: "Enter a custom amount to support our general scholarship fund." }
+};
+
+const SponsorContent = () => {
+  const [tier, setTier] = useState<keyof typeof sponsorTiers>("Sponsor a Scholar (Full Experience)");
+  const [customAmount, setCustomAmount] = useState("");
+  const [isSubmitted, setIsSubmitted] = useState(false);
+  const [sponsorDetails, setSponsorDetails] = useState({
+    name: "",
+    email: "",
+    org: ""
+  });
+
+  const getPriceDisplay = () => {
+    if (tier === "Custom Contribution") {
+      return customAmount ? `GH₵ ${customAmount}` : "Custom Amount";
+    }
+    return `GH₵ ${sponsorTiers[tier].price}`;
+  };
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsSubmitted(true);
+  };
+
+  return (
+    <div className="bg-ivory min-h-screen font-body text-foreground overflow-hidden selection:bg-plum selection:text-white pt-32 pb-12">
+      <section className="px-6 lg:px-12 max-w-4xl mx-auto mb-16 text-center">
+        <AnimatedSection>
+          <span className="text-plum font-body text-xs tracking-[0.3em] uppercase mb-8 block">
+            Sponsorship
+          </span>
+          <h1 className="text-4xl sm:text-5xl lg:text-6xl font-display font-medium text-foreground leading-[1.1] tracking-tight mb-6">
+            Invest in a <span className="italic text-soft-gold">Leader.</span>
+          </h1>
+          <p className="text-lg text-muted-foreground font-light leading-relaxed max-w-2xl mx-auto">
+            Your sponsorship directly enables qualified women to receive high-level leadership training, mentorship, and career acceleration.
+          </p>
+        </AnimatedSection>
+      </section>
+
+      <section className="px-6 lg:px-12 max-w-3xl mx-auto pb-32">
+        <AnimatedSection>
+          <div className="bg-white border border-border/40 p-8 lg:p-12 shadow-sm rounded-xl">
+            
+            {isSubmitted ? (
+              <div className="text-center py-12 space-y-6">
+                <div className="flex justify-center text-soft-gold">
+                  <CheckCircle2 size={64} strokeWidth={1.5} />
+                </div>
+                <h3 className="font-display font-medium text-3xl text-plum italic">Thank You for Your Support!</h3>
+                <p className="text-muted-foreground font-light text-lg leading-relaxed max-w-md mx-auto">
+                  Sponsorship of <strong className="text-foreground">{getPriceDisplay()}</strong> initiated. You will be contacted shortly by our partnerships director to finalize the transaction.
+                </p>
+                <div className="pt-6">
+                  <Link href="/" className="group inline-flex items-center gap-4 text-sm tracking-widest uppercase border-b border-plum pb-1 text-plum hover:text-plum-dark transition-colors">
+                    Back to Home <ArrowRight size={16} className="transform group-hover:translate-x-2 transition-transform duration-300" />
+                  </Link>
+                </div>
+              </div>
+            ) : (
+              <form onSubmit={handleSubmit} className="space-y-8">
+                
+                {/* Select Tier */}
+                <div className="border-b border-border/40 pb-10">
+                  <label className="block text-xs font-bold text-muted-foreground mb-4 uppercase tracking-wider">
+                    Sponsorship Option
+                  </label>
+                  <div className="relative">
+                    <select 
+                      value={tier}
+                      onChange={(e) => setTier(e.target.value as keyof typeof sponsorTiers)}
+                      className="w-full appearance-none bg-ivory border border-plum/20 px-6 py-5 text-xl font-display font-medium text-plum italic focus:outline-none focus:border-plum transition-colors cursor-pointer"
+                    >
+                      {Object.entries(sponsorTiers).map(([name, details]) => (
+                        <option key={name} value={name}>
+                          {name} {details.price > 0 ? `— GH₵ ${details.price}` : ""}
+                        </option>
+                      ))}
+                    </select>
+                    <div className="pointer-events-none absolute inset-y-0 right-6 flex items-center text-plum">
+                      <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                      </svg>
+                    </div>
+                  </div>
+                  <p className="mt-4 text-sm text-muted-foreground font-light italic">
+                    {sponsorTiers[tier].desc}
+                  </p>
+                </div>
+
+                {/* Custom Amount Field */}
+                {tier === "Custom Contribution" && (
+                  <AnimatedSection>
+                    <div>
+                      <label className="block text-xs font-bold text-muted-foreground/80 mb-2 uppercase tracking-wider">
+                        Sponsorship Amount (GH₵) *
+                      </label>
+                      <input 
+                        required 
+                        type="number" 
+                        min="1"
+                        value={customAmount}
+                        onChange={(e) => setCustomAmount(e.target.value)}
+                        placeholder="Enter custom amount" 
+                        className="w-full pb-4 border-b border-border/40 bg-transparent text-foreground font-light text-lg focus:outline-none focus:border-plum placeholder:text-muted-foreground/30 transition-colors" 
+                      />
+                    </div>
+                  </AnimatedSection>
+                )}
+
+                {/* Sponsor Details */}
+                <div className="space-y-6">
+                  <div>
+                    <label className="block text-xs font-bold text-muted-foreground/80 mb-2 uppercase tracking-wider">
+                      Sponsor / Organization Name *
+                    </label>
+                    <input 
+                      required 
+                      type="text" 
+                      value={sponsorDetails.name}
+                      onChange={(e) => setSponsorDetails({...sponsorDetails, name: e.target.value})}
+                      placeholder="e.g. Ama Serwaa or Enterprise Ltd." 
+                      className="w-full pb-4 border-b border-border/40 bg-transparent text-foreground font-light text-lg focus:outline-none focus:border-plum placeholder:text-muted-foreground/30 transition-colors" 
+                    />
+                  </div>
+
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-8">
+                    <div>
+                      <label className="block text-xs font-bold text-muted-foreground/80 mb-2 uppercase tracking-wider">
+                        Contact Email *
+                      </label>
+                      <input 
+                        required 
+                        type="email" 
+                        value={sponsorDetails.email}
+                        onChange={(e) => setSponsorDetails({...sponsorDetails, email: e.target.value})}
+                        placeholder="sponsor@example.com" 
+                        className="w-full pb-4 border-b border-border/40 bg-transparent text-foreground font-light text-lg focus:outline-none focus:border-plum placeholder:text-muted-foreground/30 transition-colors" 
+                    />
+                    </div>
+                    <div>
+                      <label className="block text-xs font-bold text-muted-foreground/80 mb-2 uppercase tracking-wider">
+                        Organization (Optional)
+                      </label>
+                      <input 
+                        type="text" 
+                        value={sponsorDetails.org}
+                        onChange={(e) => setSponsorDetails({...sponsorDetails, org: e.target.value})}
+                        placeholder="Company name" 
+                        className="w-full pb-4 border-b border-border/40 bg-transparent text-foreground font-light text-lg focus:outline-none focus:border-plum placeholder:text-muted-foreground/30 transition-colors" 
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                <div className="pt-8 flex flex-col items-center">
+                  <button 
+                    type="submit" 
+                    className="bg-plum text-white font-body font-medium px-12 py-5 tracking-widest uppercase text-sm hover:bg-wine transition-all duration-300 flex items-center justify-center gap-4 w-full sm:w-auto shadow-md hover-lift"
+                  >
+                    Proceed to Payment ({getPriceDisplay()}) <ArrowRight size={18} />
+                  </button>
+                  
+                  <div className="flex items-center gap-2 mt-6 text-muted-foreground font-light text-sm">
+                    <ShieldCheck size={16} className="text-plum" />
+                    Payments securely processed via Paystack
+                  </div>
+                </div>
+              </form>
+            )}
+
+          </div>
+        </AnimatedSection>
+      </section>
+    </div>
+  );
+};
+
+import { Suspense } from "react";
+import Link from "next/link";
+
+export default function SponsorPage() {
+  return (
+    <Suspense fallback={<div className="pt-32 pb-12 min-h-screen text-center">Loading...</div>}>
+      <SponsorContent />
+    </Suspense>
+  );
+}
