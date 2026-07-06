@@ -5,6 +5,7 @@ import Link from "next/link";
 import AnimatedSection from "@/components/AnimatedSection";
 
 const Courses = () => {
+
   return (
     <div className="bg-ivory min-h-screen font-body text-foreground overflow-hidden selection:bg-plum selection:text-white pt-32 pb-12">
       

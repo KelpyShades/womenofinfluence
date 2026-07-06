@@ -3,10 +3,100 @@
 import Link from "next/link";
 import Image from "next/image";
 import { motion } from "framer-motion";
-import { ArrowRight } from "lucide-react";
+import { ArrowRight, BookOpen, Mic, HelpCircle, type LucideIcon } from "lucide-react";
 import AnimatedSection from "@/components/AnimatedSection";
+import { useQuery } from "convex/react";
+import { api } from "../../convex/_generated/api";
+
+interface ResourceItem {
+  _id?: string;
+  categoryId?: string;
+  title: string;
+  description?: string;
+  url?: string;
+}
+
+interface ResourceCategory {
+  _id?: string;
+  title: string;
+  iconType: string;
+  items?: ResourceItem[];
+}
+
+const getIcon = (iconType: string): LucideIcon => {
+  switch (iconType) {
+    case "BookOpen":
+      return BookOpen;
+    case "Mic":
+      return Mic;
+    default:
+      return HelpCircle;
+  }
+};
 
 const Index = () => {
+  const settings = useQuery(api.globalSettings.getGlobalSettings);
+  const dbBusinesses = useQuery(api.businesses.getBusinesses);
+  const dbResources = useQuery(api.resources.getResources);
+
+  const heroImage = settings?.imageUrl || "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=800&q=80";
+  const heroQuote = settings?.heroQuote || "We are women of excellence, wisdom and wealth.";
+  const heroQuoteAuthor = settings?.heroQuoteAuthor || "Emanuella Ulamba, Founder";
+  const seatsAvailable = settings?.seatsAvailable ?? 5;
+  const deadlineDate = settings?.deadlineDate || "July 18";
+  const startDate = settings?.startDate || "July 27";
+  const stat1Value = settings?.stat1Value || "2";
+  const stat1Label = settings?.stat1Label || "Cohorts";
+  const stat2Value = settings?.stat2Value || "6";
+  const stat2Label = settings?.stat2Label || "Months";
+  const stat3Value = settings?.stat3Value || "7";
+  const stat3Label = settings?.stat3Label || "Pillars";
+
+  const defaultBusinesses = [
+    { name: "AfriTech Solutions", founder: "Amara Osei", description: "An ed-tech platform providing accessible digital learning across West Africa, serving over 50,000 students.", website: "#", imageUrl: "https://images.unsplash.com/photo-1516321318423-f06f85e504b3?auto=format&fit=crop&w=600&q=80" },
+    { name: "Bloom Skincare", founder: "Lily Chen", description: "A clean beauty brand by women, for women. Now available in 8 countries with sustainable, eco-friendly products.", website: "#", imageUrl: "https://images.unsplash.com/photo-1556228578-0d85b1a4d571?auto=format&fit=crop&w=600&q=80" },
+    { name: "EmpowerHer Finance", founder: "Fatou Diallo", description: "A financial literacy platform helping women in Africa build wealth through smart investing and budgeting tools.", website: "#", imageUrl: "https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&w=600&q=80" },
+    { name: "Verde Social Impact", founder: "Maria Gonzalez", description: "A social enterprise consultancy helping nonprofits and NGOs maximize their community impact.", website: "#", imageUrl: "https://images.unsplash.com/photo-1542744173-8e7e53415bb0?auto=format&fit=crop&w=600&q=80" },
+  ];
+
+  const defaultCategories = [
+    {
+      title: "Recommended Books",
+      iconType: "BookOpen",
+      items: [
+        {
+          title: "Dare to Lead",
+          description: "Brené Brown's essential guide to brave leadership — building trust, connection, and the courage to show up fully in any room.",
+        },
+        {
+          title: "The Woman God Sees",
+          description: "A powerful read on identity, divine purpose, and stepping into the fullness of who God has called you to be.",
+        },
+        {
+          title: "Rich Dad Poor Dad",
+          description: "Foundational financial literacy that every woman in the Business & Finance pillar — and beyond — should have in her library.",
+        },
+      ],
+    },
+    {
+      title: "Recommended Podcasts",
+      iconType: "Mic",
+      items: [
+        {
+          title: "The Goal Digger Podcast",
+          description: "Practical strategies for building a life and career you love — from mindset shifts to business growth, delivered with energy and faith.",
+        },
+        {
+          title: "Called & Caffeinated",
+          description: "For the woman navigating purpose, faith, and leadership. Each episode is a cup of clarity for women who know they are called to more.",
+        },
+      ],
+    },
+  ];
+
+  const businesses = dbBusinesses && dbBusinesses.length > 0 ? dbBusinesses : defaultBusinesses;
+  const categories = dbResources && dbResources.length > 0 ? dbResources : defaultCategories;
+
   return (
     <div className="bg-ivory min-h-screen font-body text-foreground overflow-hidden selection:bg-plum selection:text-white">
       {/* Editorial Hero */}
@@ -51,7 +141,7 @@ const Index = () => {
             className="lg:col-span-5 relative h-[60vh] lg:h-[80vh] w-full"
           >
             <Image
-              src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=800&q=80"
+              src={heroImage}
               alt="Elegant portrait of a woman leader"
               fill
               priority
@@ -59,10 +149,10 @@ const Index = () => {
             />
             <div className="absolute -bottom-6 -left-6 bg-ivory text-foreground p-8 shadow-xl max-w-xs">
               <p className="font-display italic text-plum text-xl mb-3 leading-snug">
-                &ldquo;We are women of excellence, wisdom and wealth.&rdquo;
+                &ldquo;{heroQuote}&rdquo;
               </p>
               <p className="text-[10px] uppercase tracking-[0.2em] text-muted-foreground">
-                &mdash; Emanuella Ulamba, Founder
+                &mdash; {heroQuoteAuthor}
               </p>
             </div>
           </motion.div>
@@ -72,9 +162,9 @@ const Index = () => {
       {/* Deadline Strip - Minimal Typography */}
       <section className="bg-soft-gold py-5 px-6 text-center shadow-sm relative z-20">
         <p className="text-foreground font-body text-xs sm:text-sm tracking-[0.2em] uppercase font-semibold">
-          Cohort Pearl &nbsp;&middot;&nbsp; Only 5 seats available
-          &nbsp;&middot;&nbsp; Deadline: July 18 &nbsp;&middot;&nbsp; Starts
-          July 27
+          Cohort Pearl &nbsp;&middot;&nbsp; Only {seatsAvailable} seats available
+          &nbsp;&middot;&nbsp; Deadline: {deadlineDate} &nbsp;&middot;&nbsp; Starts
+          {startDate}
         </p>
       </section>
 
@@ -227,6 +317,62 @@ const Index = () => {
         </div>
       </section>
 
+      {/* Alumni Businesses Section */}
+      <section className="py-20 lg:py-32 px-6 lg:px-12 bg-white border-t border-border/40">
+        <div className="max-w-7xl mx-auto">
+          <AnimatedSection>
+            <div className="text-center mb-16 lg:mb-24">
+              <span className="text-plum font-body text-xs tracking-[0.3em] uppercase mb-6 block">
+                Alumni Businesses
+              </span>
+              <h2 className="text-4xl lg:text-6xl font-display font-medium leading-tight text-foreground">
+                Empires Built <span className="italic text-plum">By Women.</span>
+              </h2>
+            </div>
+          </AnimatedSection>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-x-16 gap-y-24">
+            {businesses.map((b, i) => (
+              <AnimatedSection key={b.name} delay={i * 0.1}>
+                <div className="group flex flex-col sm:flex-row gap-8">
+                  <div className="sm:w-1/2 relative overflow-hidden shrink-0 border border-border/40">
+                    <div className="aspect-4/5 w-full">
+                      {b.imageUrl ? (
+                        <Image
+                          src={b.imageUrl}
+                          alt={b.name}
+                          width={400}
+                          height={500}
+                          className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-105 grayscale group-hover:grayscale-0"
+                        />
+                      ) : (
+                        <div className="w-full h-full bg-plum/5 flex items-center justify-center text-plum/30">
+                          No Image
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                  <div className="sm:w-1/2 flex flex-col justify-center">
+                    <span className="text-muted-foreground font-body text-xs tracking-[0.2em] uppercase mb-4 block font-medium">
+                      Founded by {b.founder}
+                    </span>
+                    <h3 className="font-display font-medium text-3xl text-foreground mb-6 italic">{b.name}</h3>
+                    <p className="text-muted-foreground font-light leading-relaxed mb-8">
+                      {b.description}
+                    </p>
+                    {b.website && b.website !== "#" && (
+                      <a href={b.website} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-4 text-xs tracking-widest uppercase border-b border-plum pb-1 hover:text-plum transition-colors w-max font-semibold">
+                        Visit Website <ArrowRight size={14} className="transform group-hover:translate-x-2 transition-transform duration-300" />
+                      </a>
+                    )}
+                  </div>
+                </div>
+              </AnimatedSection>
+            ))}
+          </div>
+        </div>
+      </section>
+
       {/* Quotation - Typographic Emphasis */}
       <section className="py-20 lg:py-32 px-6 lg:px-12 bg-white flex items-center justify-center">
         <div className="max-w-4xl mx-auto text-center">
@@ -252,9 +398,9 @@ const Index = () => {
 
               <div className="relative z-10 grid grid-cols-1 md:grid-cols-3 gap-12 lg:gap-16 text-center divide-y md:divide-y-0 md:divide-x divide-champagne/20">
                 {[
-                  { value: "2", label: "Cohorts" },
-                  { value: "6", label: "Months" },
-                  { value: "7", label: "Pillars" },
+                  { value: stat1Value, label: stat1Label },
+                  { value: stat2Value, label: stat2Label },
+                  { value: stat3Value, label: stat3Label },
                 ].map((stat) => (
                   <div key={stat.label} className="pt-8 md:pt-0">
                     <div className="text-5xl sm:text-6xl lg:text-8xl font-display text-champagne mb-3 lg:mb-4 font-light">
@@ -268,6 +414,70 @@ const Index = () => {
               </div>
             </div>
           </AnimatedSection>
+        </div>
+      </section>
+
+      {/* Resources Section */}
+      <section className="py-20 lg:py-32 px-6 lg:px-12 bg-white border-t border-border/40">
+        <div className="max-w-5xl mx-auto">
+          <AnimatedSection>
+            <div className="text-center mb-16 lg:mb-24">
+              <span className="text-plum font-body text-xs tracking-[0.3em] uppercase mb-6 block font-semibold">
+                Resources
+              </span>
+              <h2 className="text-4xl lg:text-6xl font-display font-medium leading-tight text-foreground">
+                Fuel Your <span className="italic text-plum">Growth.</span>
+              </h2>
+            </div>
+          </AnimatedSection>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-12 lg:gap-16">
+            {categories.map((cat: ResourceCategory, i: number) => {
+              const Icon = getIcon(cat.iconType);
+              return (
+                <AnimatedSection key={cat.title || cat._id} delay={i * 0.1}>
+                  <div className="border-t border-plum pt-6">
+                    <div className="flex items-center justify-between mb-8">
+                      <h3 className="font-display font-medium text-2xl text-foreground italic">
+                        {cat.title}
+                      </h3>
+                      <Icon size={20} className="text-plum opacity-50" />
+                    </div>
+                    <ul className="space-y-6">
+                      {cat.items?.map((item: ResourceItem) => (
+                        <li
+                          key={item.title || item._id}
+                          className="flex items-start gap-3 group"
+                        >
+                          <span className="w-1.5 h-1.5 rounded-full bg-plum/30 mt-2 shrink-0 group-hover:bg-plum transition-colors" />
+                          <div className="space-y-1">
+                            <span className="font-display font-medium text-lg text-foreground block">
+                              {item.title}
+                            </span>
+                            {item.description && (
+                              <p className="text-muted-foreground font-light text-sm leading-relaxed">
+                                {item.description}
+                              </p>
+                            )}
+                            {item.url && (
+                              <a
+                                href={item.url}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="text-xs text-plum font-semibold tracking-wider hover:underline inline-block pt-1"
+                              >
+                                View Resource &rarr;
+                              </a>
+                            )}
+                          </div>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                </AnimatedSection>
+              );
+            })}
+          </div>
         </div>
       </section>
     </div>

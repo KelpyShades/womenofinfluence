@@ -5,14 +5,11 @@ export const getStats = query({
   handler: async (ctx) => {
     // Note: For a large database, use `count()` if available or digest tables. 
     // Here we use collect() for simplicity since data is small.
-    const programs = await ctx.db.query("programs").collect();
     const testimonials = await ctx.db.query("testimonials").collect();
     const applications = await ctx.db.query("applications").collect();
     const partnerships = await ctx.db.query("partnerships").collect();
 
     return {
-      totalPrograms: programs.length,
-      activePrograms: programs.filter((p) => p.isActive).length,
       totalTestimonials: testimonials.length,
       pendingApplications: applications.filter((a) => a.paymentStatus === "pending").length,
       successfulApplications: applications.filter((a) => a.paymentStatus === "success").length,

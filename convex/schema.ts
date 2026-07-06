@@ -20,21 +20,43 @@ export default defineSchema({
     role: v.literal("admin"),
   }).index("by_token", ["token"]),
 
-  // Homepage / Global Settings
-  alumniHero: defineTable({
-    name: v.string(),
-    role: v.string(),
-    imageId: v.id("_storage"),
+  // Global Settings
+  globalSettings: defineTable({
+    // Hero Section
+    heroImageId: v.optional(v.id("_storage")),
+    heroQuote: v.string(),
+    heroQuoteAuthor: v.string(),
+    
+    // Cohort details
+    seatsAvailable: v.number(),
+    deadlineDate: v.string(),
+    startDate: v.string(),
+    
+    // Stats Section
+    stat1Value: v.string(),
+    stat1Label: v.string(),
+    stat2Value: v.string(),
+    stat2Label: v.string(),
+    stat3Value: v.string(),
+    stat3Label: v.string(),
+
+    // Foundation pricing & schedule
+    foundationTotal: v.number(),
+    foundationSecure: v.number(),
+    foundationInstallment1Amount: v.number(),
+    foundationInstallment1Month: v.string(),
+    foundationInstallment2Amount: v.number(),
+    foundationInstallment2Month: v.string(),
+
+    // Full Experience pricing & schedule
+    fullExpTotal: v.number(),
+    fullExpSecure: v.number(),
+    fullExpInstallment1Amount: v.number(),
+    fullExpInstallment1Month: v.string(),
+    fullExpInstallment2Amount: v.number(),
+    fullExpInstallment2Month: v.string(),
   }),
 
-  // Academy Programs & Courses
-  programs: defineTable({
-    title: v.string(),
-    description: v.string(),
-    price: v.string(), // e.g., "GH₵ 500"
-    isActive: v.boolean(),
-  }),
-  
   // Testimonials & Success Stories
   testimonials: defineTable({
     name: v.string(),
@@ -71,14 +93,21 @@ export default defineSchema({
   resources: defineTable({
     categoryId: v.id("resourceCategories"),
     title: v.string(),
+    description: v.optional(v.string()),
     url: v.optional(v.string()),
   }),
 
   // Form Submissions (Leads & Payments)
   applications: defineTable({
-    name: v.string(),
+    fullName: v.string(),
     email: v.string(),
-    courseId: v.id("programs"),
+    phone: v.string(),
+    country: v.string(),
+    packageName: v.union(v.literal("The Foundation"), v.literal("The Full Experience")),
+    pillars: v.array(v.string()),
+    whyJoin: v.string(),
+    vision: v.string(),
+    referral: v.optional(v.string()),
     amount: v.number(), // Amount paid
     paymentReference: v.optional(v.string()), // Paystack reference
     paymentStatus: v.union(v.literal("pending"), v.literal("success"), v.literal("failed")),

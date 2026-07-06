@@ -10,15 +10,16 @@
 
 import type * as admin from "../admin.js";
 import type * as adminFunctions from "../adminFunctions.js";
-import type * as alumniHero from "../alumniHero.js";
 import type * as auth from "../auth.js";
+import type * as businesses from "../businesses.js";
 import type * as dashboard from "../dashboard.js";
 import type * as files from "../files.js";
 import type * as gallery from "../gallery.js";
+import type * as globalSettings from "../globalSettings.js";
 import type * as http from "../http.js";
 import type * as inbox from "../inbox.js";
 import type * as invites from "../invites.js";
-import type * as programs from "../programs.js";
+import type * as resources from "../resources.js";
 import type * as testimonials from "../testimonials.js";
 
 import type {
@@ -30,15 +31,16 @@ import type {
 declare const fullApi: ApiFromModules<{
   admin: typeof admin;
   adminFunctions: typeof adminFunctions;
-  alumniHero: typeof alumniHero;
   auth: typeof auth;
+  businesses: typeof businesses;
   dashboard: typeof dashboard;
   files: typeof files;
   gallery: typeof gallery;
+  globalSettings: typeof globalSettings;
   http: typeof http;
   inbox: typeof inbox;
   invites: typeof invites;
-  programs: typeof programs;
+  resources: typeof resources;
   testimonials: typeof testimonials;
 }>;
 

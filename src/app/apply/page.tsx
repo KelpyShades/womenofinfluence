@@ -4,6 +4,8 @@ import { useState, useRef, Suspense } from "react";
 import { ArrowRight, ShieldCheck, CheckCircle2 } from "lucide-react";
 import { z } from "zod";
 import AnimatedSection from "@/components/AnimatedSection";
+import { useQuery, useMutation } from "convex/react";
+import { api } from "../../../convex/_generated/api";
 
 // Simple HTML/XSS escape sanitizer helper
 const sanitizeString = (val: string): string => {
@@ -83,6 +85,25 @@ const applicationSchema = z.object({
 type ApplicationFormData = z.infer<typeof applicationSchema>;
 
 const ApplyContent = () => {
+  const settings = useQuery(api.globalSettings.getGlobalSettings);
+  const submitApplication = useMutation(api.inbox.submitApplication);
+
+  const seatsAvailable = settings?.seatsAvailable ?? 5;
+  const deadlineDate = settings?.deadlineDate || "July 18, 2026";
+  const startDate = settings?.startDate || "July 27, 2026";
+  const foundationTotal = settings?.foundationTotal ?? 600;
+  const foundationSecure = settings?.foundationSecure ?? 300;
+  const foundationInstallment1Amount = settings?.foundationInstallment1Amount ?? 150;
+  const foundationInstallment1Month = settings?.foundationInstallment1Month || "August";
+  const foundationInstallment2Amount = settings?.foundationInstallment2Amount ?? 150;
+  const foundationInstallment2Month = settings?.foundationInstallment2Month || "September";
+  const fullExpTotal = settings?.fullExpTotal ?? 2500;
+  const fullExpSecure = settings?.fullExpSecure ?? 1500;
+  const fullExpInstallment1Amount = settings?.fullExpInstallment1Amount ?? 500;
+  const fullExpInstallment1Month = settings?.fullExpInstallment1Month || "August";
+  const fullExpInstallment2Amount = settings?.fullExpInstallment2Amount ?? 500;
+  const fullExpInstallment2Month = settings?.fullExpInstallment2Month || "September";
+
   const formRef = useRef<HTMLDivElement>(null);
   const [packageName, setPackageName] = useState<
     "The Foundation" | "The Full Experience"
@@ -179,17 +200,25 @@ const ApplyContent = () => {
 
     // Success payload ready for DB
     const validatedData = result.data;
-    console.log(
-      "Validated payload ready for database submission:",
-      validatedData,
-    );
+    const amount = packageName === "The Foundation" ? foundationSecure : fullExpSecure;
 
-    // Simulate database write
     try {
-      await new Promise((resolve) => setTimeout(resolve, 1500));
+      await submitApplication({
+        fullName: validatedData.fullName,
+        email: validatedData.email,
+        phone: validatedData.phone,
+        country: validatedData.country,
+        packageName: validatedData.packageName,
+        pillars: validatedData.pillars,
+        whyJoin: validatedData.whyJoin,
+        vision: validatedData.vision,
+        referral: validatedData.referral,
+        amount,
+      });
       setIsSuccess(true);
     } catch (err) {
       console.error("Submission failed", err);
+      alert("Submission failed. Please try again.");
     } finally {
       setIsSubmitting(false);
     }
@@ -201,7 +230,7 @@ const ApplyContent = () => {
       <section className="px-6 lg:px-12 max-w-4xl mx-auto mb-20">
         <AnimatedSection className="text-center">
           <span className="text-plum font-body text-xs tracking-[0.3em] uppercase mb-6 block font-semibold">
-            Cohort Pearl · July 27, 2026
+            Cohort Pearl · {startDate}
           </span>
           <h1 className="text-4xl sm:text-6xl font-display font-medium text-foreground leading-[1.1] tracking-tight mb-8">
             Your Seat Is{" "}
@@ -211,7 +240,7 @@ const ApplyContent = () => {
           <p className="text-lg text-muted-foreground font-light mb-12">
             Application deadline:{" "}
             <strong className="text-soft-gold font-semibold">
-              July 18, 2026
+              {deadlineDate}
             </strong>
             . You are not here by accident.
           </p>
@@ -225,7 +254,7 @@ const ApplyContent = () => {
               <p className="text-base sm:text-lg font-light leading-relaxed text-ivory/90">
                 Only{" "}
                 <strong className="font-semibold text-champagne">
-                  5 women
+                  {seatsAvailable} women
                 </strong>{" "}
                 will be accepted into Cohort Pearl. This program is
                 intentionally small, private, and premium — because every woman
@@ -263,7 +292,7 @@ const ApplyContent = () => {
                     The Foundation
                   </h3>
                   <p className="text-[14px] tracking-widest uppercase font-semibold text-muted-foreground">
-                    Without Trip · Total GH₵ 600
+                    Without Trip · Total GH₵ {foundationTotal}
                   </p>
                 </div>
 
@@ -271,7 +300,7 @@ const ApplyContent = () => {
                   <div className="text-2xl font-display font-medium text-foreground">
                     GH₵{" "}
                     <span className="text-4xl text-plum font-semibold">
-                      300
+                      {foundationSecure}
                     </span>{" "}
                     <span className="text-sm font-body font-light text-muted-foreground">
                       to secure seat
@@ -288,20 +317,19 @@ const ApplyContent = () => {
                     <span className="font-light text-foreground/80">
                       🔐 Before Admission
                     </span>
-                    <span className="font-medium text-foreground">GH₵ 300</span>
-                  </div>
-                  {/* <div className="flex justify-between text-sm"><span className="font-light text-foreground/80">📅 July</span><span className="font-medium text-foreground">GH₵ 250</span></div> */}
-                  <div className="flex justify-between text-sm">
-                    <span className="font-light text-foreground/80">
-                      📅 August
-                    </span>
-                    <span className="font-medium text-foreground">GH₵ 150</span>
+                    <span className="font-medium text-foreground">GH₵ {foundationSecure}</span>
                   </div>
                   <div className="flex justify-between text-sm">
                     <span className="font-light text-foreground/80">
-                      📅 September
+                      📅 {foundationInstallment1Month}
                     </span>
-                    <span className="font-medium text-foreground">GH₵ 150</span>
+                    <span className="font-medium text-foreground">GH₵ {foundationInstallment1Amount}</span>
+                  </div>
+                  <div className="flex justify-between text-sm">
+                    <span className="font-light text-foreground/80">
+                      📅 {foundationInstallment2Month}
+                    </span>
+                    <span className="font-medium text-foreground">GH₵ {foundationInstallment2Amount}</span>
                   </div>
                 </div>
 
@@ -355,7 +383,7 @@ const ApplyContent = () => {
                     The Full Experience
                   </h3>
                   <p className="text-[14px] tracking-widest uppercase font-semibold text-ivory/60">
-                    With 4-Day Accra Trip · Total GH₵ 2,500
+                    With 4-Day Accra Trip · Total GH₵ {fullExpTotal}
                   </p>
                 </div>
 
@@ -363,7 +391,7 @@ const ApplyContent = () => {
                   <div className="text-2xl font-display font-medium text-ivory">
                     GH₵{" "}
                     <span className="text-4xl text-champagne font-semibold">
-                      1,500
+                      {fullExpSecure}
                     </span>{" "}
                     <span className="text-sm font-body font-light text-ivory/60">
                       to secure seat
@@ -380,18 +408,17 @@ const ApplyContent = () => {
                     <span className="font-light text-ivory/80">
                       🔐 Before Admission
                     </span>
-                    <span className="font-medium text-ivory">GH₵ 1,500</span>
+                    <span className="font-medium text-ivory">GH₵ {fullExpSecure}</span>
                   </div>
-                  {/* <div className="flex justify-between text-sm"><span className="font-light text-ivory/80">📅 July</span><span className="font-medium text-ivory">GH₵ 600</span></div> */}
                   <div className="flex justify-between text-sm">
-                    <span className="font-light text-ivory/80">📅 August</span>
-                    <span className="font-medium text-ivory">GH₵ 500</span>
+                    <span className="font-light text-ivory/80">📅 {fullExpInstallment1Month}</span>
+                    <span className="font-medium text-ivory">GH₵ {fullExpInstallment1Amount}</span>
                   </div>
                   <div className="flex justify-between text-sm">
                     <span className="font-light text-ivory/80">
-                      📅 September
+                      📅 {fullExpInstallment2Month}
                     </span>
-                    <span className="font-medium text-ivory">GH₵ 500</span>
+                    <span className="font-medium text-ivory">GH₵ {fullExpInstallment2Amount}</span>
                   </div>
                 </div>
 
@@ -438,9 +465,9 @@ const ApplyContent = () => {
           {/* Deadline Strip */}
           <div className="bg-ivory border border-border/40 py-4 px-6 text-center rounded-xl mt-12 text-sm text-muted-foreground">
             ⏰ Application deadline:{" "}
-            <strong className="text-foreground">July 18, 2026</strong>{" "}
+            <strong className="text-foreground">{deadlineDate}</strong>{" "}
             &nbsp;&middot;&nbsp; Programme starts{" "}
-            <strong className="text-foreground">July 27, 2026</strong>{" "}
+            <strong className="text-foreground">{startDate}</strong>{" "}
             &nbsp;&middot;&nbsp; All currencies accepted
           </div>
         </div>
@@ -502,10 +529,10 @@ const ApplyContent = () => {
                     className="w-full bg-ivory border border-border/30 px-4 py-3 rounded-lg text-sm text-foreground focus:outline-none focus:border-plum cursor-pointer appearance-none"
                   >
                     <option value="The Foundation">
-                      The Foundation (Without Trip) — GH₵ 600
+                      The Foundation (Without Trip) — GH₵ {foundationTotal}
                     </option>
                     <option value="The Full Experience">
-                      The Full Experience (With Accra Trip) — GH₵ 2,500
+                      The Full Experience (With Accra Trip) — GH₵ {fullExpTotal}
                     </option>
                   </select>
                   <div className="pointer-events-none absolute inset-y-0 right-4 flex items-center text-plum">
