@@ -1,4 +1,5 @@
 import AnimatedSection from "@/components/AnimatedSection";
+import StorySection from "@/components/StorySection";
 
 const values = [
   { title: "Leadership", description: "We cultivate bold, decisive leaders who inspire change." },
@@ -63,17 +64,7 @@ const About = () => {
       </section>
 
       {/* Story */}
-      <section className="px-6 lg:px-12 max-w-5xl mx-auto mb-32">
-        <AnimatedSection>
-          <div className="border-l border-plum pl-8 lg:pl-16">
-            <h2 className="font-display font-medium text-4xl mb-8">How It All Began</h2>
-            <div className="space-y-6 text-lg font-light text-muted-foreground leading-relaxed max-w-3xl">
-              <p>Women of Influence Academy was born from a simple but powerful belief: when women are equipped with the right tools, they can change the world.</p>
-              <p>Today, we&apos;ve trained over 5,000 women across 25+ countries, launched hundreds of businesses, and built a community of over 10,000 ambitious women who support, challenge, and inspire each other daily.</p>
-            </div>
-          </div>
-        </AnimatedSection>
-      </section>
+      <StorySection />
 
       {/* Values */}
       <section className="bg-ivory border-t border-border/40 py-24 px-6 lg:px-12">

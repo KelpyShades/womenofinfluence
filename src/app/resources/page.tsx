@@ -9,7 +9,7 @@ const categories = [
       {
         title: "Dare to Lead",
         description:
-          "Brené Brown&apos;s essential guide to brave leadership &mdash; building trust, connection, and the courage to show up fully in any room.",
+          "Brené Brown's essential guide to brave leadership &mdash; building trust, connection, and the courage to show up fully in any room.",
       },
       {
         title: "The Woman God Sees",
