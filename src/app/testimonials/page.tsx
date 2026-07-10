@@ -18,7 +18,6 @@ interface TestimonialRecord {
   videoUrl: string | null;
 }
 
-
 const Testimonials = () => {
   const testimonials = useQuery(api.testimonials.getTestimonials) as TestimonialRecord[] | undefined;
 
