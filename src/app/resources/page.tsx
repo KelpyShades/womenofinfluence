@@ -2,7 +2,8 @@
 
 import { BookOpen, Mic, HelpCircle, type LucideIcon } from "lucide-react";
 import AnimatedSection from "@/components/AnimatedSection";
-import { useQuery } from "convex/react";
+import { useQuery } from "convex-helpers/react/cache/hooks";
+import { Skeleton } from "@/components/ui/skeleton";
 import { api } from "../../../convex/_generated/api";
 
 interface ResourceItem {
@@ -34,42 +35,8 @@ const getIcon = (iconType: string): LucideIcon => {
 const Resources = () => {
   const dbResources = useQuery(api.resources.getResources);
 
-  const defaultCategories = [
-    {
-      title: "Recommended Books",
-      iconType: "BookOpen",
-      items: [
-        {
-          title: "Dare to Lead",
-          description: "Brené Brown's essential guide to brave leadership — building trust, connection, and the courage to show up fully in any room.",
-        },
-        {
-          title: "The Woman God Sees",
-          description: "A powerful read on identity, divine purpose, and stepping into the fullness of who God has called you to be.",
-        },
-        {
-          title: "Rich Dad Poor Dad",
-          description: "Foundational financial literacy that every woman in the Business & Finance pillar — and beyond — should have in her library.",
-        },
-      ],
-    },
-    {
-      title: "Recommended Podcasts",
-      iconType: "Mic",
-      items: [
-        {
-          title: "The Goal Digger Podcast",
-          description: "Practical strategies for building a life and career you love — from mindset shifts to business growth, delivered with energy and faith.",
-        },
-        {
-          title: "Called & Caffeinated",
-          description: "For the woman navigating purpose, faith, and leadership. Each episode is a cup of clarity for women who know they are called to more.",
-        },
-      ],
-    },
-  ];
-
-  const categories = dbResources && dbResources.length > 0 ? dbResources : defaultCategories;
+  const isResourcesLoading = dbResources === undefined;
+  const categories = dbResources || [];
 
   return (
     <div className="bg-ivory min-h-screen font-body text-foreground overflow-hidden selection:bg-plum selection:text-white pt-32 pb-12">
@@ -91,51 +58,78 @@ const Resources = () => {
 
       <section className="px-6 lg:px-12 max-w-5xl mx-auto pb-32">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-12 lg:gap-16">
-          {categories.map((cat: ResourceCategory, i: number) => {
-            const Icon = getIcon(cat.iconType);
-            return (
-              <AnimatedSection key={cat.title || cat._id} delay={i * 0.1}>
-                <div className="border-t border-plum pt-6">
-                  <div className="flex items-center justify-between mb-8">
-                    <h3 className="font-display font-medium text-2xl text-foreground italic">
-                      {cat.title}
-                    </h3>
-                    <Icon size={20} className="text-plum opacity-50" />
-                  </div>
-                  <ul className="space-y-6">
-                    {cat.items?.map((item: ResourceItem) => (
-                      <li
-                        key={item.title || item._id}
-                        className="flex items-start gap-3 group"
-                      >
-                        <span className="w-1.5 h-1.5 rounded-full bg-plum/30 mt-2 shrink-0 group-hover:bg-plum transition-colors" />
-                        <div className="space-y-1">
-                          <span className="font-display font-medium text-lg text-foreground block">
-                            {item.title}
-                          </span>
-                          {item.description && (
-                            <p className="text-muted-foreground font-light text-sm leading-relaxed">
-                              {item.description}
-                            </p>
-                          )}
-                          {item.url && (
-                            <a
-                              href={item.url}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              className="text-xs text-plum font-semibold tracking-wider hover:underline inline-block pt-1"
-                            >
-                              View Resource &rarr;
-                            </a>
-                          )}
-                        </div>
-                      </li>
-                    ))}
-                  </ul>
+          {isResourcesLoading ? (
+            Array.from({ length: 2 }).map((_, i) => (
+              <div key={i} className="border-t border-plum pt-6 space-y-8 animate-pulse">
+                <div className="flex items-center justify-between">
+                  <Skeleton className="h-8 w-48" />
+                  <Skeleton className="h-6 w-6 rounded-full" />
                 </div>
-              </AnimatedSection>
-            );
-          })}
+                <div className="space-y-6">
+                  {Array.from({ length: 3 }).map((_, idx) => (
+                    <div key={idx} className="flex items-start gap-3">
+                      <Skeleton className="w-2 h-2 rounded-full mt-2 shrink-0" />
+                      <div className="space-y-2 w-full">
+                        <Skeleton className="h-5 w-1/3" />
+                        <Skeleton className="h-4 w-full" />
+                        <Skeleton className="h-4 w-5/6" />
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            ))
+          ) : categories.length === 0 ? (
+            <div className="col-span-full py-16 text-center">
+              <p className="text-muted-foreground font-light text-lg">No resources available at the moment.</p>
+            </div>
+          ) : (
+            categories.map((cat: ResourceCategory, i: number) => {
+              const Icon = getIcon(cat.iconType);
+              return (
+                <AnimatedSection key={cat.title || cat._id} delay={i * 0.1}>
+                  <div className="border-t border-plum pt-6">
+                    <div className="flex items-center justify-between mb-8">
+                      <h3 className="font-display font-medium text-2xl text-foreground italic">
+                        {cat.title}
+                      </h3>
+                      <Icon size={20} className="text-plum opacity-50" />
+                    </div>
+                    <ul className="space-y-6">
+                      {cat.items?.map((item: ResourceItem) => (
+                        <li
+                          key={item.title || item._id}
+                          className="flex items-start gap-3 group"
+                        >
+                          <span className="w-1.5 h-1.5 rounded-full bg-plum/30 mt-2 shrink-0 group-hover:bg-plum transition-colors" />
+                          <div className="space-y-1">
+                            <span className="font-display font-medium text-lg text-foreground block">
+                              {item.title}
+                            </span>
+                            {item.description && (
+                              <p className="text-muted-foreground font-light text-sm leading-relaxed">
+                                {item.description}
+                              </p>
+                            )}
+                            {item.url && (
+                              <a
+                                href={item.url}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="text-xs text-plum font-semibold tracking-wider hover:underline inline-block pt-1"
+                              >
+                                View Resource &rarr;
+                              </a>
+                            )}
+                          </div>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                </AnimatedSection>
+              );
+            })
+          )}
         </div>
       </section>
     </div>

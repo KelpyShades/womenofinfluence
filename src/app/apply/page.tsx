@@ -4,7 +4,9 @@ import { useState, useRef, Suspense } from "react";
 import { ArrowRight, ShieldCheck, CheckCircle2 } from "lucide-react";
 import { z } from "zod";
 import AnimatedSection from "@/components/AnimatedSection";
-import { useQuery, useMutation } from "convex/react";
+import { useMutation } from "convex/react";
+import { useQuery } from "convex-helpers/react/cache/hooks";
+import { Skeleton } from "@/components/ui/skeleton";
 import { api } from "../../../convex/_generated/api";
 
 // Simple HTML/XSS escape sanitizer helper
@@ -87,6 +89,8 @@ type ApplicationFormData = z.infer<typeof applicationSchema>;
 const ApplyContent = () => {
   const settings = useQuery(api.globalSettings.getGlobalSettings);
   const submitApplication = useMutation(api.inbox.submitApplication);
+
+  const isSettingsLoading = settings === undefined;
 
   const seatsAvailable = settings?.seatsAvailable ?? 5;
   const deadlineDate = settings?.deadlineDate || "July 18, 2026";
@@ -230,7 +234,7 @@ const ApplyContent = () => {
       <section className="px-6 lg:px-12 max-w-4xl mx-auto mb-20">
         <AnimatedSection className="text-center">
           <span className="text-plum font-body text-xs tracking-[0.3em] uppercase mb-6 block font-semibold">
-            Cohort Pearl · {startDate}
+            Cohort Pearl · {isSettingsLoading ? <Skeleton className="h-4 w-24 inline-block" /> : startDate}
           </span>
           <h1 className="text-4xl sm:text-6xl font-display font-medium text-foreground leading-[1.1] tracking-tight mb-8">
             Your Seat Is{" "}
@@ -240,7 +244,7 @@ const ApplyContent = () => {
           <p className="text-lg text-muted-foreground font-light mb-12">
             Application deadline:{" "}
             <strong className="text-soft-gold font-semibold">
-              {deadlineDate}
+              {isSettingsLoading ? <Skeleton className="h-4 w-24 inline-block bg-soft-gold/20" /> : deadlineDate}
             </strong>
             . You are not here by accident.
           </p>
@@ -254,7 +258,7 @@ const ApplyContent = () => {
               <p className="text-base sm:text-lg font-light leading-relaxed text-ivory/90">
                 Only{" "}
                 <strong className="font-semibold text-champagne">
-                  {seatsAvailable} women
+                  {isSettingsLoading ? <Skeleton className="h-4 w-8 inline-block bg-champagne/20" /> : seatsAvailable} women
                 </strong>{" "}
                 will be accepted into Cohort Pearl. This program is
                 intentionally small, private, and premium — because every woman
@@ -292,7 +296,7 @@ const ApplyContent = () => {
                     The Foundation
                   </h3>
                   <p className="text-[14px] tracking-widest uppercase font-semibold text-muted-foreground">
-                    Without Trip · Total GH₵ {foundationTotal}
+                    Without Trip · Total GH₵ {isSettingsLoading ? <Skeleton className="h-4 w-12 inline-block" /> : foundationTotal}
                   </p>
                 </div>
 
@@ -300,7 +304,7 @@ const ApplyContent = () => {
                   <div className="text-2xl font-display font-medium text-foreground">
                     GH₵{" "}
                     <span className="text-4xl text-plum font-semibold">
-                      {foundationSecure}
+                      {isSettingsLoading ? <Skeleton className="h-8 w-16 inline-block" /> : foundationSecure}
                     </span>{" "}
                     <span className="text-sm font-body font-light text-muted-foreground">
                       to secure seat
@@ -317,19 +321,19 @@ const ApplyContent = () => {
                     <span className="font-light text-foreground/80">
                       🔐 Before Admission
                     </span>
-                    <span className="font-medium text-foreground">GH₵ {foundationSecure}</span>
+                    <span className="font-medium text-foreground">GH₵ {isSettingsLoading ? <Skeleton className="h-4 w-12 inline-block" /> : foundationSecure}</span>
                   </div>
                   <div className="flex justify-between text-sm">
                     <span className="font-light text-foreground/80">
-                      📅 {foundationInstallment1Month}
+                      📅 {isSettingsLoading ? <Skeleton className="h-4 w-16 inline-block" /> : foundationInstallment1Month}
                     </span>
-                    <span className="font-medium text-foreground">GH₵ {foundationInstallment1Amount}</span>
+                    <span className="font-medium text-foreground">GH₵ {isSettingsLoading ? <Skeleton className="h-4 w-12 inline-block" /> : foundationInstallment1Amount}</span>
                   </div>
                   <div className="flex justify-between text-sm">
                     <span className="font-light text-foreground/80">
-                      📅 {foundationInstallment2Month}
+                      📅 {isSettingsLoading ? <Skeleton className="h-4 w-16 inline-block" /> : foundationInstallment2Month}
                     </span>
-                    <span className="font-medium text-foreground">GH₵ {foundationInstallment2Amount}</span>
+                    <span className="font-medium text-foreground">GH₵ {isSettingsLoading ? <Skeleton className="h-4 w-12 inline-block" /> : foundationInstallment2Amount}</span>
                   </div>
                 </div>
 
@@ -383,7 +387,7 @@ const ApplyContent = () => {
                     The Full Experience
                   </h3>
                   <p className="text-[14px] tracking-widest uppercase font-semibold text-ivory/60">
-                    With 4-Day Accra Trip · Total GH₵ {fullExpTotal}
+                    With 4-Day Accra Trip · Total GH₵ {isSettingsLoading ? <Skeleton className="h-4 w-12 inline-block bg-white/10" /> : fullExpTotal}
                   </p>
                 </div>
 
@@ -391,7 +395,7 @@ const ApplyContent = () => {
                   <div className="text-2xl font-display font-medium text-ivory">
                     GH₵{" "}
                     <span className="text-4xl text-champagne font-semibold">
-                      {fullExpSecure}
+                      {isSettingsLoading ? <Skeleton className="h-8 w-16 inline-block bg-white/10" /> : fullExpSecure}
                     </span>{" "}
                     <span className="text-sm font-body font-light text-ivory/60">
                       to secure seat
@@ -408,17 +412,17 @@ const ApplyContent = () => {
                     <span className="font-light text-ivory/80">
                       🔐 Before Admission
                     </span>
-                    <span className="font-medium text-ivory">GH₵ {fullExpSecure}</span>
+                    <span className="font-medium text-ivory">GH₵ {isSettingsLoading ? <Skeleton className="h-4 w-12 inline-block bg-white/10" /> : fullExpSecure}</span>
                   </div>
                   <div className="flex justify-between text-sm">
-                    <span className="font-light text-ivory/80">📅 {fullExpInstallment1Month}</span>
-                    <span className="font-medium text-ivory">GH₵ {fullExpInstallment1Amount}</span>
+                    <span className="font-light text-ivory/80">📅 {isSettingsLoading ? <Skeleton className="h-4 w-16 inline-block bg-white/10" /> : fullExpInstallment1Month}</span>
+                    <span className="font-medium text-ivory">GH₵ {isSettingsLoading ? <Skeleton className="h-4 w-12 inline-block bg-white/10" /> : fullExpInstallment1Amount}</span>
                   </div>
                   <div className="flex justify-between text-sm">
                     <span className="font-light text-ivory/80">
-                      📅 {fullExpInstallment2Month}
+                      📅 {isSettingsLoading ? <Skeleton className="h-4 w-16 inline-block bg-white/10" /> : fullExpInstallment2Month}
                     </span>
-                    <span className="font-medium text-ivory">GH₵ {fullExpInstallment2Amount}</span>
+                    <span className="font-medium text-ivory">GH₵ {isSettingsLoading ? <Skeleton className="h-4 w-12 inline-block bg-white/10" /> : fullExpInstallment2Amount}</span>
                   </div>
                 </div>
 
@@ -463,11 +467,11 @@ const ApplyContent = () => {
           </div>
 
           {/* Deadline Strip */}
-          <div className="bg-ivory border border-border/40 py-4 px-6 text-center rounded-xl mt-12 text-sm text-muted-foreground">
+          <div className="bg-ivory border border-border/40 py-4 px-6 text-center rounded-xl mt-12 text-sm text-muted-foreground flex justify-center items-center gap-1">
             ⏰ Application deadline:{" "}
-            <strong className="text-foreground">{deadlineDate}</strong>{" "}
+            <strong className="text-foreground">{isSettingsLoading ? <Skeleton className="h-4 w-24 inline-block" /> : deadlineDate}</strong>{" "}
             &nbsp;&middot;&nbsp; Programme starts{" "}
-            <strong className="text-foreground">{startDate}</strong>{" "}
+            <strong className="text-foreground">{isSettingsLoading ? <Skeleton className="h-4 w-24 inline-block" /> : startDate}</strong>{" "}
             &nbsp;&middot;&nbsp; All currencies accepted
           </div>
         </div>

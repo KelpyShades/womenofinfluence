@@ -20,7 +20,7 @@ export const addBusiness = mutation({
     founder: v.string(),
     description: v.string(),
     website: v.string(),
-    imageId: v.id("_storage"),
+    imageId: v.optional(v.id("_storage")),
   },
   handler: async (ctx, args) => {
     return await ctx.db.insert("businesses", args);
@@ -34,7 +34,7 @@ export const updateBusiness = mutation({
     founder: v.string(),
     description: v.string(),
     website: v.string(),
-    imageId: v.id("_storage"),
+    imageId: v.optional(v.id("_storage")),
   },
   handler: async (ctx, args) => {
     const { id, ...updates } = args;

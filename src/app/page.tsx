@@ -5,7 +5,8 @@ import Image from "next/image";
 import { motion } from "framer-motion";
 import { ArrowRight, BookOpen, Mic, HelpCircle, type LucideIcon } from "lucide-react";
 import AnimatedSection from "@/components/AnimatedSection";
-import { useQuery } from "convex/react";
+import { useQuery } from "convex-helpers/react/cache/hooks";
+import { Skeleton } from "@/components/ui/skeleton";
 import { api } from "../../convex/_generated/api";
 
 interface ResourceItem {
@@ -52,50 +53,12 @@ const Index = () => {
   const stat3Value = settings?.stat3Value || "7";
   const stat3Label = settings?.stat3Label || "Pillars";
 
-  const defaultBusinesses = [
-    { name: "AfriTech Solutions", founder: "Amara Osei", description: "An ed-tech platform providing accessible digital learning across West Africa, serving over 50,000 students.", website: "#", imageUrl: "https://images.unsplash.com/photo-1516321318423-f06f85e504b3?auto=format&fit=crop&w=600&q=80" },
-    { name: "Bloom Skincare", founder: "Lily Chen", description: "A clean beauty brand by women, for women. Now available in 8 countries with sustainable, eco-friendly products.", website: "#", imageUrl: "https://images.unsplash.com/photo-1556228578-0d85b1a4d571?auto=format&fit=crop&w=600&q=80" },
-    { name: "EmpowerHer Finance", founder: "Fatou Diallo", description: "A financial literacy platform helping women in Africa build wealth through smart investing and budgeting tools.", website: "#", imageUrl: "https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&w=600&q=80" },
-    { name: "Verde Social Impact", founder: "Maria Gonzalez", description: "A social enterprise consultancy helping nonprofits and NGOs maximize their community impact.", website: "#", imageUrl: "https://images.unsplash.com/photo-1542744173-8e7e53415bb0?auto=format&fit=crop&w=600&q=80" },
-  ];
+  const isSettingsLoading = settings === undefined;
+  const isBusinessesLoading = dbBusinesses === undefined;
+  const isResourcesLoading = dbResources === undefined;
 
-  const defaultCategories = [
-    {
-      title: "Recommended Books",
-      iconType: "BookOpen",
-      items: [
-        {
-          title: "Dare to Lead",
-          description: "Brené Brown's essential guide to brave leadership — building trust, connection, and the courage to show up fully in any room.",
-        },
-        {
-          title: "The Woman God Sees",
-          description: "A powerful read on identity, divine purpose, and stepping into the fullness of who God has called you to be.",
-        },
-        {
-          title: "Rich Dad Poor Dad",
-          description: "Foundational financial literacy that every woman in the Business & Finance pillar — and beyond — should have in her library.",
-        },
-      ],
-    },
-    {
-      title: "Recommended Podcasts",
-      iconType: "Mic",
-      items: [
-        {
-          title: "The Goal Digger Podcast",
-          description: "Practical strategies for building a life and career you love — from mindset shifts to business growth, delivered with energy and faith.",
-        },
-        {
-          title: "Called & Caffeinated",
-          description: "For the woman navigating purpose, faith, and leadership. Each episode is a cup of clarity for women who know they are called to more.",
-        },
-      ],
-    },
-  ];
-
-  const businesses = dbBusinesses && dbBusinesses.length > 0 ? dbBusinesses : defaultBusinesses;
-  const categories = dbResources && dbResources.length > 0 ? dbResources : defaultCategories;
+  const businesses = dbBusinesses && dbBusinesses.length > 0 ? dbBusinesses : [];
+  const categories = dbResources && dbResources.length > 0 ? dbResources : [];
 
   return (
     <div className="bg-ivory min-h-screen font-body text-foreground overflow-hidden selection:bg-plum selection:text-white">
@@ -140,32 +103,51 @@ const Index = () => {
             transition={{ duration: 1.5, ease: [0.16, 1, 0.3, 1], delay: 0.2 }}
             className="lg:col-span-5 relative h-[60vh] lg:h-[80vh] w-full"
           >
-            <Image
-              src={heroImage}
-              alt="Elegant portrait of a woman leader"
-              fill
-              priority
-              className="absolute inset-0 w-full h-full object-cover rounded-t-[10rem] shadow-2xl"
-            />
-            <div className="absolute -bottom-6 -left-6 bg-ivory text-foreground p-8 shadow-xl max-w-xs">
-              <p className="font-display italic text-plum text-xl mb-3 leading-snug">
-                &ldquo;{heroQuote}&rdquo;
-              </p>
-              <p className="text-[10px] uppercase tracking-[0.2em] text-muted-foreground">
-                &mdash; {heroQuoteAuthor}
-              </p>
+            {isSettingsLoading ? (
+              <Skeleton className="absolute inset-0 w-full h-full rounded-t-[10rem]" />
+            ) : (
+              <Image
+                src={heroImage}
+                alt="Elegant portrait of a woman leader"
+                fill
+                priority
+                className="absolute inset-0 w-full h-full object-cover rounded-t-[10rem] shadow-2xl"
+              />
+            )}
+            <div className="absolute -bottom-6 -left-6 bg-ivory text-foreground p-8 shadow-xl max-w-xs w-72">
+              {isSettingsLoading ? (
+                <div className="space-y-3">
+                  <Skeleton className="h-5 w-5/6" />
+                  <Skeleton className="h-5 w-full" />
+                  <Skeleton className="h-5 w-2/3" />
+                  <Skeleton className="h-3 w-1/2 mt-4" />
+                </div>
+              ) : (
+                <>
+                  <p className="font-display italic text-plum text-xl mb-3 leading-snug">
+                    &ldquo;{heroQuote}&rdquo;
+                  </p>
+                  <p className="text-[10px] uppercase tracking-[0.2em] text-muted-foreground">
+                    &mdash; {heroQuoteAuthor}
+                  </p>
+                </>
+              )}
             </div>
           </motion.div>
         </div>
       </section>
 
       {/* Deadline Strip - Minimal Typography */}
-      <section className="bg-soft-gold py-5 px-6 text-center shadow-sm relative z-20">
-        <p className="text-foreground font-body text-xs sm:text-sm tracking-[0.2em] uppercase font-semibold">
-          Cohort Pearl &nbsp;&middot;&nbsp; Only {seatsAvailable} seats available
-          &nbsp;&middot;&nbsp; Deadline: {deadlineDate} &nbsp;&middot;&nbsp; Starts
-          {startDate}
-        </p>
+      <section className="bg-soft-gold py-5 px-6 text-center shadow-sm relative z-20 flex justify-center items-center">
+        {isSettingsLoading ? (
+          <Skeleton className="h-4 w-96 bg-foreground/10" />
+        ) : (
+          <p className="text-foreground font-body text-xs sm:text-sm tracking-[0.2em] uppercase font-semibold">
+            Cohort Pearl &nbsp;&middot;&nbsp; Only {seatsAvailable} seats available
+            &nbsp;&middot;&nbsp; Deadline: {deadlineDate} &nbsp;&middot;&nbsp; Starts
+            {startDate}
+          </p>
+        )}
       </section>
 
       {/* Who We Are Section - Editorial */}
@@ -332,43 +314,67 @@ const Index = () => {
           </AnimatedSection>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-x-16 gap-y-24">
-            {businesses.map((b, i) => (
-              <AnimatedSection key={b.name} delay={i * 0.1}>
-                <div className="group flex flex-col sm:flex-row gap-8">
-                  <div className="sm:w-1/2 relative overflow-hidden shrink-0 border border-border/40">
-                    <div className="aspect-4/5 w-full">
-                      {b.imageUrl ? (
-                        <Image
-                          src={b.imageUrl}
-                          alt={b.name}
-                          width={400}
-                          height={500}
-                          className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-105 grayscale group-hover:grayscale-0"
-                        />
-                      ) : (
-                        <div className="w-full h-full bg-plum/5 flex items-center justify-center text-plum/30">
-                          No Image
-                        </div>
+            {isBusinessesLoading ? (
+              Array.from({ length: 4 }).map((_, i) => (
+                <div key={i} className="group flex flex-col sm:flex-row gap-8 w-full animate-pulse">
+                  <div className="sm:w-1/2 shrink-0">
+                    <Skeleton className="aspect-4/5 w-full border border-border/40" />
+                  </div>
+                  <div className="sm:w-1/2 flex flex-col justify-center space-y-4">
+                    <Skeleton className="h-4 w-1/3" />
+                    <Skeleton className="h-8 w-3/4" />
+                    <div className="space-y-2">
+                      <Skeleton className="h-4 w-full" />
+                      <Skeleton className="h-4 w-full" />
+                      <Skeleton className="h-4 w-2/3" />
+                    </div>
+                    <Skeleton className="h-4 w-1/3 mt-4" />
+                  </div>
+                </div>
+              ))
+            ) : businesses.length === 0 ? (
+              <div className="col-span-full py-16 text-center">
+                <p className="text-muted-foreground font-light text-lg">No alumni businesses featured at the moment.</p>
+              </div>
+            ) : (
+              businesses.map((b, i) => (
+                <AnimatedSection key={b.name} delay={i * 0.1}>
+                  <div className="group flex flex-col sm:flex-row gap-8">
+                    <div className="sm:w-1/2 relative overflow-hidden shrink-0 border border-border/40">
+                      <div className="aspect-4/5 w-full">
+                        {b.imageUrl ? (
+                          <Image
+                            src={b.imageUrl}
+                            alt={b.name}
+                            width={400}
+                            height={500}
+                            className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-105 grayscale group-hover:grayscale-0"
+                          />
+                        ) : (
+                          <div className="w-full h-full bg-plum/5 flex items-center justify-center text-plum/30">
+                            No Image
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                    <div className="sm:w-1/2 flex flex-col justify-center">
+                      <span className="text-muted-foreground font-body text-xs tracking-[0.2em] uppercase mb-4 block font-medium">
+                        Founded by {b.founder}
+                      </span>
+                      <h3 className="font-display font-medium text-3xl text-foreground mb-6 italic">{b.name}</h3>
+                      <p className="text-muted-foreground font-light leading-relaxed mb-8">
+                        {b.description}
+                      </p>
+                      {b.website && b.website !== "#" && (
+                        <a href={b.website} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-4 text-xs tracking-widest uppercase border-b border-plum pb-1 hover:text-plum transition-colors w-max font-semibold">
+                          Visit Website <ArrowRight size={14} className="transform group-hover:translate-x-2 transition-transform duration-300" />
+                        </a>
                       )}
                     </div>
                   </div>
-                  <div className="sm:w-1/2 flex flex-col justify-center">
-                    <span className="text-muted-foreground font-body text-xs tracking-[0.2em] uppercase mb-4 block font-medium">
-                      Founded by {b.founder}
-                    </span>
-                    <h3 className="font-display font-medium text-3xl text-foreground mb-6 italic">{b.name}</h3>
-                    <p className="text-muted-foreground font-light leading-relaxed mb-8">
-                      {b.description}
-                    </p>
-                    {b.website && b.website !== "#" && (
-                      <a href={b.website} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-4 text-xs tracking-widest uppercase border-b border-plum pb-1 hover:text-plum transition-colors w-max font-semibold">
-                        Visit Website <ArrowRight size={14} className="transform group-hover:translate-x-2 transition-transform duration-300" />
-                      </a>
-                    )}
-                  </div>
-                </div>
-              </AnimatedSection>
-            ))}
+                </AnimatedSection>
+              ))
+            )}
           </div>
         </div>
       </section>
@@ -397,20 +403,29 @@ const Index = () => {
               <div className="absolute top-0 left-0 w-full h-full bg-linear-to-br from-wine to-plum opacity-50"></div>
 
               <div className="relative z-10 grid grid-cols-1 md:grid-cols-3 gap-12 lg:gap-16 text-center divide-y md:divide-y-0 md:divide-x divide-champagne/20">
-                {[
-                  { value: stat1Value, label: stat1Label },
-                  { value: stat2Value, label: stat2Label },
-                  { value: stat3Value, label: stat3Label },
-                ].map((stat) => (
-                  <div key={stat.label} className="pt-8 md:pt-0">
-                    <div className="text-5xl sm:text-6xl lg:text-8xl font-display text-champagne mb-3 lg:mb-4 font-light">
-                      {stat.value}
+                {isSettingsLoading ? (
+                  Array.from({ length: 3 }).map((_, idx) => (
+                    <div key={idx} className="pt-8 md:pt-0 flex flex-col items-center justify-center space-y-4 px-4">
+                      <Skeleton className="h-16 w-24 bg-ivory/10" />
+                      <Skeleton className="h-4 w-32 bg-ivory/10" />
                     </div>
-                    <div className="text-[10px] sm:text-xs tracking-[0.3em] uppercase text-ivory/80">
-                      {stat.label}
+                  ))
+                ) : (
+                  [
+                    { value: stat1Value, label: stat1Label },
+                    { value: stat2Value, label: stat2Label },
+                    { value: stat3Value, label: stat3Label },
+                  ].map((stat) => (
+                    <div key={stat.label} className="pt-8 md:pt-0">
+                      <div className="text-5xl sm:text-6xl lg:text-8xl font-display text-champagne mb-3 lg:mb-4 font-light">
+                        {stat.value}
+                      </div>
+                      <div className="text-[10px] sm:text-xs tracking-[0.3em] uppercase text-ivory/80">
+                        {stat.label}
+                      </div>
                     </div>
-                  </div>
-                ))}
+                  ))
+                )}
               </div>
             </div>
           </AnimatedSection>
@@ -432,51 +447,78 @@ const Index = () => {
           </AnimatedSection>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-12 lg:gap-16">
-            {categories.map((cat: ResourceCategory, i: number) => {
-              const Icon = getIcon(cat.iconType);
-              return (
-                <AnimatedSection key={cat.title || cat._id} delay={i * 0.1}>
-                  <div className="border-t border-plum pt-6">
-                    <div className="flex items-center justify-between mb-8">
-                      <h3 className="font-display font-medium text-2xl text-foreground italic">
-                        {cat.title}
-                      </h3>
-                      <Icon size={20} className="text-plum opacity-50" />
-                    </div>
-                    <ul className="space-y-6">
-                      {cat.items?.map((item: ResourceItem) => (
-                        <li
-                          key={item.title || item._id}
-                          className="flex items-start gap-3 group"
-                        >
-                          <span className="w-1.5 h-1.5 rounded-full bg-plum/30 mt-2 shrink-0 group-hover:bg-plum transition-colors" />
-                          <div className="space-y-1">
-                            <span className="font-display font-medium text-lg text-foreground block">
-                              {item.title}
-                            </span>
-                            {item.description && (
-                              <p className="text-muted-foreground font-light text-sm leading-relaxed">
-                                {item.description}
-                              </p>
-                            )}
-                            {item.url && (
-                              <a
-                                href={item.url}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className="text-xs text-plum font-semibold tracking-wider hover:underline inline-block pt-1"
-                              >
-                                View Resource &rarr;
-                              </a>
-                            )}
-                          </div>
-                        </li>
-                      ))}
-                    </ul>
+            {isResourcesLoading ? (
+              Array.from({ length: 2 }).map((_, i) => (
+                <div key={i} className="border-t border-plum pt-6 space-y-8 animate-pulse">
+                  <div className="flex items-center justify-between">
+                    <Skeleton className="h-8 w-48" />
+                    <Skeleton className="h-6 w-6 rounded-full" />
                   </div>
-                </AnimatedSection>
-              );
-            })}
+                  <div className="space-y-6">
+                    {Array.from({ length: 3 }).map((_, idx) => (
+                      <div key={idx} className="flex items-start gap-3">
+                        <Skeleton className="w-2 h-2 rounded-full mt-2 shrink-0" />
+                        <div className="space-y-2 w-full">
+                          <Skeleton className="h-5 w-1/3" />
+                          <Skeleton className="h-4 w-full" />
+                          <Skeleton className="h-4 w-5/6" />
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              ))
+            ) : categories.length === 0 ? (
+              <div className="col-span-full py-16 text-center">
+                <p className="text-muted-foreground font-light text-lg">No resources available at the moment.</p>
+              </div>
+            ) : (
+              categories.map((cat: ResourceCategory, i: number) => {
+                const Icon = getIcon(cat.iconType);
+                return (
+                  <AnimatedSection key={cat.title || cat._id} delay={i * 0.1}>
+                    <div className="border-t border-plum pt-6">
+                      <div className="flex items-center justify-between mb-8">
+                        <h3 className="font-display font-medium text-2xl text-foreground italic">
+                          {cat.title}
+                        </h3>
+                        <Icon size={20} className="text-plum opacity-50" />
+                      </div>
+                      <ul className="space-y-6">
+                        {cat.items?.map((item: ResourceItem) => (
+                          <li
+                            key={item.title || item._id}
+                            className="flex items-start gap-3 group"
+                          >
+                            <span className="w-1.5 h-1.5 rounded-full bg-plum/30 mt-2 shrink-0 group-hover:bg-plum transition-colors" />
+                            <div className="space-y-1">
+                              <span className="font-display font-medium text-lg text-foreground block">
+                                {item.title}
+                              </span>
+                              {item.description && (
+                                <p className="text-muted-foreground font-light text-sm leading-relaxed">
+                                  {item.description}
+                                </p>
+                              )}
+                              {item.url && (
+                                <a
+                                  href={item.url}
+                                  target="_blank"
+                                  rel="noopener noreferrer"
+                                  className="text-xs text-plum font-semibold tracking-wider hover:underline inline-block pt-1"
+                                >
+                                  View Resource &rarr;
+                                </a>
+                              )}
+                            </div>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  </AnimatedSection>
+                );
+              })
+            )}
           </div>
         </div>
       </section>

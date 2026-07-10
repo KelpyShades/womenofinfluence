@@ -74,7 +74,7 @@ export default defineSchema({
     founder: v.string(),
     description: v.string(),
     website: v.string(),
-    imageId: v.id("_storage"), // Uploaded via Convex Storage
+    imageId: v.optional(v.id("_storage")), // Uploaded via Convex Storage
   }),
 
   // Gallery (Images, Videos, Awards)
