@@ -30,7 +30,7 @@ const Businesses = () => {
         </AnimatedSection>
       </section>
 
-      <section className="px-6 lg:px-12 max-w-[1400px] mx-auto pb-32">
+      <section className="px-6 lg:px-12 max-w-350 mx-auto pb-32">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-x-16 gap-y-24">
           {isBusinessesLoading ? (
             Array.from({ length: 4 }).map((_, i) => (

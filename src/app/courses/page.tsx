@@ -71,7 +71,7 @@ const Courses = () => {
               Four Steps to <br/>
               <span className="italic text-soft-gold">Your Influence</span>
             </h2>
-            <div className="w-20 h-[2px] bg-soft-gold mb-16"></div>
+            <div className="w-20 h-0.5 bg-soft-gold mb-16"></div>
           </AnimatedSection>
 
           {/* Timeline list */}
@@ -123,6 +123,52 @@ const Courses = () => {
               </p>
             </div>
           </AnimatedSection>
+        </div>
+      </section>
+
+      {/* Who You'll Become Section */}
+      <section className="py-20 lg:py-32 px-6 lg:px-12 bg-white">
+        <div className="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-16 items-start">
+          <div className="lg:col-span-5">
+            <AnimatedSection>
+              <span className="text-plum font-body text-xs tracking-[0.3em] uppercase mb-6 block font-semibold">
+                The Outcome
+              </span>
+              <h2 className="text-4xl lg:text-6xl font-display font-medium leading-tight mb-8 text-foreground">
+                Who You&apos;ll <br/>
+                <span className="italic text-soft-gold">Become.</span>
+              </h2>
+              <p className="text-muted-foreground font-light text-lg leading-relaxed max-w-sm">
+                WIA isn&apos;t just about what you learn &mdash; it&apos;s about who you become. Over the course of six months, you will transition from a woman with potential to a woman with undeniable influence.
+              </p>
+            </AnimatedSection>
+          </div>
+          
+          <div className="lg:col-span-7 grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-12">
+            {[
+              {
+                title: "Bold & Articulate",
+                desc: "You will no longer second-guess your voice. You will know how to speak, when to speak, and how to command a room with grace and authority."
+              },
+              {
+                title: "Spiritually Grounded",
+                desc: "Your influence will not be built on trends or hustle, but on the solid foundation of God's Word. You will lead with deep spiritual intelligence."
+              },
+              {
+                title: "Competent & Strategic",
+                desc: "Passion is not enough. You will develop the high-level competence and strategy required to occupy the top spaces in your chosen pillar."
+              },
+              {
+                title: "Part of a Sisterhood",
+                desc: "You will leave with a lifelong circle of women who will pray for you, celebrate you, and hold you accountable as you climb."
+              }
+            ].map((outcome, idx) => (
+              <AnimatedSection key={idx} delay={idx * 0.1}>
+                <h3 className="font-display font-medium text-2xl mb-4 text-plum italic">{outcome.title}</h3>
+                <p className="text-muted-foreground font-light text-base leading-relaxed">{outcome.desc}</p>
+              </AnimatedSection>
+            ))}
+          </div>
         </div>
       </section>
 

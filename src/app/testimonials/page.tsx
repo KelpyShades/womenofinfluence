@@ -38,7 +38,7 @@ const Testimonials = () => {
           <span className="text-plum font-body text-xs tracking-[0.3em] uppercase mb-8 block">
             Testimonials
           </span>
-          <h1 className="text-5xl sm:text-6xl lg:text-7xl font-display font-medium text-foreground leading-[1.1] tracking-tight mb-8">
+          <h1 className="text-4xl sm:text-5xl lg:text-7xl font-display font-medium text-foreground leading-[1.1] tracking-tight mb-8">
             Stories of <br/>
             <span className="italic text-plum">Transformation.</span>
           </h1>
@@ -76,7 +76,7 @@ const Testimonials = () => {
             written.map((t, i) => (
               <AnimatedSection key={t.name} delay={i * 0.1}>
                 <div className="flex flex-col h-full border-t border-border/40 pt-8">
-                  <p className="text-foreground font-display text-xl leading-relaxed mb-8 flex-1 italic">
+                  <p className="text-foreground font-display text-lg md:text-xl leading-relaxed mb-8 flex-1 italic">
                     &ldquo;{t.quote}&rdquo;
                   </p>
                   {"achievement" in t && t.achievement && (

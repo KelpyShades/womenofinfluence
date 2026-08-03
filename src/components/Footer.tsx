@@ -3,6 +3,9 @@
 import Link from "next/link";
 import Image from "next/image";
 import { Heart, Mail } from "lucide-react";
+import { useState } from "react";
+import { useMutation } from "convex/react";
+import { api } from "../../convex/_generated/api";
 
 const InstagramIcon = ({ size = 16 }: { size?: number }) => (
   <svg
@@ -22,7 +25,7 @@ const InstagramIcon = ({ size = 16 }: { size?: number }) => (
   </svg>
 );
 
-const TwitterIcon = ({ size = 16 }: { size?: number }) => (
+const YoutubeIcon = ({ size = 16 }: { size?: number }) => (
   <svg
     xmlns="http://www.w3.org/2000/svg"
     width={size}
@@ -34,11 +37,12 @@ const TwitterIcon = ({ size = 16 }: { size?: number }) => (
     strokeLinecap="round"
     strokeLinejoin="round"
   >
-    <path d="M22 4s-.7 2.1-2 3.4c1.6 10-9.4 17.3-18 11.6 2.2.1 4.4-.6 6-2C3 15.5.5 9.6 3 5c2.2 2.6 5.6 4.1 9 4-.9-4.2 4-6.6 7-3.8 1.1 0 3-1.2 3-1.2z" />
+    <path d="M22.54 6.42a2.78 2.78 0 0 0-1.94-2C18.88 4 12 4 12 4s-6.88 0-8.6.46a2.78 2.78 0 0 0-1.94 2A29 29 0 0 0 1 11.75a29 29 0 0 0 .46 5.33 2.78 2.78 0 0 0 1.94 2c1.72.46 8.6.46 8.6.46s6.88 0 8.6-.46a2.78 2.78 0 0 0 1.94-2 29 29 0 0 0 .46-5.33 29 29 0 0 0-.46-5.33z" />
+    <polygon points="9.75 15.02 15.5 11.75 9.75 8.48 9.75 15.02" />
   </svg>
 );
 
-const LinkedinIcon = ({ size = 16 }: { size?: number }) => (
+const TiktokIcon = ({ size = 16 }: { size?: number }) => (
   <svg
     xmlns="http://www.w3.org/2000/svg"
     width={size}
@@ -50,34 +54,33 @@ const LinkedinIcon = ({ size = 16 }: { size?: number }) => (
     strokeLinecap="round"
     strokeLinejoin="round"
   >
-    <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z" />
-    <rect width="4" height="12" x="2" y="9" />
-    <circle cx="4" cy="4" r="2" />
-  </svg>
-);
-
-const FacebookIcon = ({ size = 16 }: { size?: number }) => (
-  <svg
-    xmlns="http://www.w3.org/2000/svg"
-    width={size}
-    height={size}
-    viewBox="0 0 24 24"
-    fill="none"
-    stroke="currentColor"
-    strokeWidth="2"
-    strokeLinecap="round"
-    strokeLinejoin="round"
-  >
-    <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z" />
+    <path d="M9 12a4 4 0 1 0 4 4V4a5 5 0 0 0 5 5" />
   </svg>
 );
 
 const Footer = () => {
+  const [email, setEmail] = useState("");
+  const [status, setStatus] = useState<"idle" | "loading" | "success">("idle");
+  const subscribe = useMutation(api.newsletter.subscribe);
+
+  const handleSubscribe = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!email) return;
+    setStatus("loading");
+    try {
+      await subscribe({ email });
+      setStatus("success");
+      setEmail("");
+    } catch (error) {
+      console.error(error);
+      setStatus("idle");
+    }
+  };
+
   const socialLinks = [
-    { icon: InstagramIcon, href: "#", label: "Instagram" },
-    { icon: TwitterIcon, href: "#", label: "Twitter" },
-    { icon: LinkedinIcon, href: "#", label: "LinkedIn" },
-    { icon: FacebookIcon, href: "#", label: "Facebook" },
+    { icon: InstagramIcon, href: "https://www.instagram.com/women_of_influence_academy?utm_source=qr&igsh=dmw2YmVxY2E2c3I0", label: "Instagram" },
+    { icon: YoutubeIcon, href: "https://youtube.com/@women_of_influence?feature=shared", label: "YouTube" },
+    { icon: TiktokIcon, href: "https://vt.tiktok.com/ZSCsbUncr/", label: "TikTok" },
   ];
 
   return (
@@ -112,9 +115,7 @@ const Footer = () => {
                 { name: "The Program", path: "/courses" },
                 { name: "Pillars", path: "/pillars" },
                 { name: "Gallery", path: "/gallery" },
-                { name: "Resources", path: "/resources" },
                 { name: "Testimonials", path: "/testimonials" },
-                { name: "Businesses", path: "/businesses" },
                 { name: "Partnerships", path: "/partnerships" },
                 { name: "About Us", path: "/about" },
                 { name: "Apply Now", path: "/apply" },
@@ -168,14 +169,21 @@ const Footer = () => {
             <p className="text-primary-foreground/70 text-sm font-body mb-4">
               Join our newsletter for updates, tips, and opportunities.
             </p>
-            <form onSubmit={(e) => e.preventDefault()} className="flex gap-2">
+            <form onSubmit={handleSubscribe} className="flex gap-2">
               <input
                 type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
                 placeholder="Your email"
                 className="flex-1 px-4 py-2.5 rounded-full bg-primary-foreground/10 border border-primary-foreground/20 text-primary-foreground placeholder:text-primary-foreground/40 text-sm font-body focus:outline-none focus:border-gold"
+                disabled={status === "loading" || status === "success"}
               />
-              <button type="submit" className="btn-gold text-xs px-5 py-2.5">
-                Join
+              <button 
+                type="submit" 
+                className="btn-gold text-xs px-5 py-2.5 disabled:opacity-50"
+                disabled={status === "loading" || status === "success" || !email}
+              >
+                {status === "loading" ? "..." : status === "success" ? "Joined!" : "Join"}
               </button>
             </form>
           </div>

@@ -76,7 +76,7 @@ const PillarsOfInfluence = () => {
             <h2 className="text-4xl lg:text-5xl font-display font-medium leading-tight mb-8 text-foreground">
               Where Is God <br className="lg:hidden" /><span className="italic text-plum">Positioning You?</span>
             </h2>
-            <div className="w-16 h-[2px] bg-soft-gold mb-10"></div>
+            <div className="w-16 h-0.5 bg-soft-gold mb-10"></div>
             <p className="text-muted-foreground text-lg lg:text-xl font-light leading-relaxed">
               In every generation, God raises women to occupy strategic positions and extend His influence across the spheres of society. As women of influence, we are not just called to exist — but to thrive, lead, and create transformation.
             </p>

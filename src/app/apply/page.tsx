@@ -95,14 +95,14 @@ const ApplyContent = () => {
   const seatsAvailable = settings?.seatsAvailable ?? 5;
   const deadlineDate = settings?.deadlineDate || "July 18, 2026";
   const startDate = settings?.startDate || "July 27, 2026";
-  const foundationTotal = settings?.foundationTotal ?? 600;
-  const foundationSecure = settings?.foundationSecure ?? 300;
-  const foundationInstallment1Amount = settings?.foundationInstallment1Amount ?? 150;
+  const foundationTotal = settings?.foundationTotal ?? 800;
+  const foundationSecure = settings?.foundationSecure ?? 400;
+  const foundationInstallment1Amount = settings?.foundationInstallment1Amount ?? 200;
   const foundationInstallment1Month = settings?.foundationInstallment1Month || "August";
-  const foundationInstallment2Amount = settings?.foundationInstallment2Amount ?? 150;
+  const foundationInstallment2Amount = settings?.foundationInstallment2Amount ?? 200;
   const foundationInstallment2Month = settings?.foundationInstallment2Month || "September";
-  const fullExpTotal = settings?.fullExpTotal ?? 2500;
-  const fullExpSecure = settings?.fullExpSecure ?? 1500;
+  const fullExpTotal = settings?.fullExpTotal ?? 3000;
+  const fullExpSecure = settings?.fullExpSecure ?? 2000;
   const fullExpInstallment1Amount = settings?.fullExpInstallment1Amount ?? 500;
   const fullExpInstallment1Month = settings?.fullExpInstallment1Month || "August";
   const fullExpInstallment2Amount = settings?.fullExpInstallment2Amount ?? 500;
@@ -280,7 +280,7 @@ const ApplyContent = () => {
             <h2 className="text-3xl sm:text-5xl font-display font-medium text-foreground leading-tight italic">
               Two Paths. One Destination.
             </h2>
-            <div className="w-16 h-[2px] bg-soft-gold mx-auto mt-6 mb-8"></div>
+            <div className="w-16 h-0.5 bg-soft-gold mx-auto mt-6 mb-8"></div>
             <p className="text-muted-foreground font-light text-lg max-w-2xl mx-auto leading-relaxed">
               Payments are split to make your journey easy. Secure your seat
               with an admission fee, then pay monthly as you grow.
@@ -467,12 +467,18 @@ const ApplyContent = () => {
           </div>
 
           {/* Deadline Strip */}
-          <div className="bg-ivory border border-border/40 py-4 px-6 text-center rounded-xl mt-12 text-sm text-muted-foreground flex justify-center items-center gap-1">
-            ⏰ Application deadline:{" "}
-            <strong className="text-foreground">{isSettingsLoading ? <Skeleton className="h-4 w-24 inline-block" /> : deadlineDate}</strong>{" "}
-            &nbsp;&middot;&nbsp; Programme starts{" "}
-            <strong className="text-foreground">{isSettingsLoading ? <Skeleton className="h-4 w-24 inline-block" /> : startDate}</strong>{" "}
-            &nbsp;&middot;&nbsp; All currencies accepted
+          <div className="bg-ivory border border-border/40 py-6 px-6 text-center rounded-xl mt-12 text-sm text-muted-foreground flex flex-col md:flex-row justify-center items-center gap-6 md:gap-12 divide-y md:divide-y-0 md:divide-x divide-border/40">
+            <div className="flex flex-col items-center pt-2 md:pt-0">
+              <span className="mb-1 text-xs uppercase tracking-widest font-bold">Application deadline</span>
+              <strong className="text-foreground text-base">{isSettingsLoading ? <Skeleton className="h-5 w-24 inline-block" /> : deadlineDate}</strong>
+            </div>
+            <div className="flex flex-col items-center pt-4 md:pt-0 md:pl-12">
+              <span className="mb-1 text-xs uppercase tracking-widest font-bold">Programme starts</span>
+              <strong className="text-foreground text-base">{isSettingsLoading ? <Skeleton className="h-5 w-24 inline-block" /> : startDate}</strong>
+            </div>
+            <div className="flex flex-col items-center pt-4 md:pt-0 md:pl-12">
+              <span className="text-xs uppercase tracking-widest font-bold text-foreground">All currencies accepted</span>
+            </div>
           </div>
         </div>
       </section>
@@ -504,7 +510,7 @@ const ApplyContent = () => {
                 Tell Us About <br />
                 <span className="italic text-soft-gold">You</span>
               </h2>
-              <div className="w-12 h-[2px] bg-soft-gold mb-6"></div>
+              <div className="w-12 h-0.5 bg-soft-gold mb-6"></div>
               <p className="text-muted-foreground font-light text-base leading-relaxed">
                 Take your time with this. These questions are not just
                 administrative — they are the beginning of your WIA journey.

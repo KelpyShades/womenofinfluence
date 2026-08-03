@@ -30,7 +30,8 @@ const About = () => {
       <section className="bg-white py-24 px-6 lg:px-12 mb-24">
         <div className="max-w-5xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-16">
           <AnimatedSection>
-            <h2 className="font-display font-medium text-3xl mb-6 text-plum italic">Our Mission</h2>
+            <h2 className="font-display font-medium text-3xl mb-2 text-plum italic">Our Mission</h2>
+            <p className="text-soft-gold font-body text-xs tracking-[0.2em] uppercase mb-6 font-bold">Citadel of wealth, wisdom and excellence</p>
             <div className="space-y-6 text-muted-foreground font-light text-lg leading-relaxed">
               <p>
                 At the heart of the Women of Influence Training Program is a divine
@@ -50,7 +51,8 @@ const About = () => {
             </div>
           </AnimatedSection>
           <AnimatedSection delay={0.15}>
-            <h2 className="font-display font-medium text-3xl mb-6 text-plum italic">Our Vision</h2>
+            <h2 className="font-display font-medium text-3xl mb-2 text-plum italic">Our Vision</h2>
+            <p className="text-soft-gold font-body text-xs tracking-[0.2em] uppercase mb-6 font-bold">Citadel of wealth, wisdom and excellence</p>
             <p className="text-muted-foreground font-light text-lg leading-relaxed">
               To equip, empower, and elevate women into positions of influence by fostering
               excellence, discipline, and leadership. Through spiritual and intellectual growth,

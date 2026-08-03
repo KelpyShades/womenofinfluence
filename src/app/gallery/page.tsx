@@ -38,7 +38,7 @@ const Gallery = () => {
         </AnimatedSection>
       </section>
 
-      <section className="px-6 lg:px-12 max-w-[1400px] mx-auto pb-32">
+      <section className="px-6 lg:px-12 max-w-350 mx-auto pb-32">
         {isGalleryLoading ? (
           <div className="columns-1 sm:columns-2 lg:columns-3 gap-8 space-y-12">
             {Array.from({ length: 6 }).map((_, i) => (

@@ -12,10 +12,9 @@ const navLinks = [
   { name: "The Program", path: "/courses" },
   { name: "Pillars", path: "/pillars" },
   { name: "Gallery", path: "/gallery" },
-  { name: "Resources", path: "/resources" },
   { name: "Testimonials", path: "/testimonials" },
-  { name: "Businesses", path: "/businesses" },
   { name: "Partnerships", path: "/partnerships" },
+  { name: "Team", path: "/team" },
   { name: "About", path: "/about" },
 ];
 
@@ -65,7 +64,7 @@ const Navbar = () => {
               <Link
                 key={link.path}
                 href={link.path}
-                className={`px-3 py-2 rounded-lg text-sm font-body font-medium uppercase tracking-wider transition-colors duration-200 ${
+                className={`px-3 py-2 rounded-lg text-xs lg:text-[11px] xl:text-xs font-body font-medium uppercase tracking-wider transition-colors duration-200 ${
                   pathname === link.path
                     ? scrolled || !isDarkHero
                       ? "text-primary bg-plum/10"
@@ -109,7 +108,7 @@ const Navbar = () => {
                   key={link.path}
                   href={link.path}
                   onClick={() => setIsOpen(false)}
-                  className={`block px-4 py-3 rounded-lg text-sm font-body font-medium uppercase tracking-wider transition-colors ${
+                  className={`block px-4 py-3 rounded-lg text-xs font-body font-medium uppercase tracking-wider transition-colors ${
                     pathname === link.path
                       ? "text-primary bg-plum/10"
                       : "text-muted-foreground hover:text-foreground hover:bg-muted"

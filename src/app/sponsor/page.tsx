@@ -3,17 +3,20 @@
 import { useState } from "react";
 import { ArrowRight, ShieldCheck, CheckCircle2 } from "lucide-react";
 import AnimatedSection from "@/components/AnimatedSection";
+import { useMutation, useQuery } from "convex/react";
+import { api } from "../../../convex/_generated/api";
 
 const sponsorTiers = {
-  "Sponsor a Scholar (Tuition Only)": { price: 500, desc: "Covers standard academic tuition and core learning materials for 6 months." },
-  "Sponsor a Scholar (Full Experience)": { price: 800, desc: "Covers tuition, materials, and the cohort trip to Accra." },
   "Custom Contribution": { price: 0, desc: "Enter a custom amount to support our general scholarship fund." }
 };
 
 const SponsorContent = () => {
-  const [tier, setTier] = useState<keyof typeof sponsorTiers>("Sponsor a Scholar (Full Experience)");
+  const [tier, setTier] = useState<keyof typeof sponsorTiers>("Custom Contribution");
   const [customAmount, setCustomAmount] = useState("");
   const [isSubmitted, setIsSubmitted] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const submitSponsorship = useMutation(api.inbox.submitSponsorship);
+  const settings = useQuery(api.globalSettings.getGlobalSettings);
   const [sponsorDetails, setSponsorDetails] = useState({
     name: "",
     email: "",
@@ -21,15 +24,28 @@ const SponsorContent = () => {
   });
 
   const getPriceDisplay = () => {
-    if (tier === "Custom Contribution") {
-      return customAmount ? `GH₵ ${customAmount}` : "Custom Amount";
-    }
-    return `GH₵ ${sponsorTiers[tier].price}`;
+    return customAmount ? `GH₵ ${customAmount}` : "Custom Amount";
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setIsSubmitted(true);
+    if (!customAmount || isNaN(Number(customAmount))) return;
+    
+    setIsSubmitting(true);
+    try {
+      await submitSponsorship({
+        name: sponsorDetails.name,
+        email: sponsorDetails.email,
+        organization: sponsorDetails.org || undefined,
+        amount: Number(customAmount),
+      });
+      setIsSubmitted(true);
+    } catch (error) {
+      console.error(error);
+      alert("Something went wrong. Please try again.");
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -58,9 +74,26 @@ const SponsorContent = () => {
                   <CheckCircle2 size={64} strokeWidth={1.5} />
                 </div>
                 <h3 className="font-display font-medium text-3xl text-plum italic">Thank You for Your Support!</h3>
-                <p className="text-muted-foreground font-light text-lg leading-relaxed max-w-md mx-auto">
-                  Sponsorship of <strong className="text-foreground">{getPriceDisplay()}</strong> initiated. You will be contacted shortly by our partnerships director to finalize the transaction.
+                <p className="text-muted-foreground font-light text-lg leading-relaxed max-w-md mx-auto mb-4">
+                  Sponsorship of <strong className="text-foreground">{getPriceDisplay()}</strong> initiated. We have sent an email with the bank account details for your transfer.
                 </p>
+                
+                <div className="bg-ivory border border-border/40 p-6 rounded-lg text-left max-w-md mx-auto space-y-3">
+                  <p className="text-xs uppercase tracking-widest font-bold text-plum">Bank Transfer Details</p>
+                  <div>
+                    <span className="text-xs text-muted-foreground">Account Name</span>
+                    <p className="font-medium text-foreground">{settings?.bankAccountName || "Loading..."}</p>
+                  </div>
+                  <div>
+                    <span className="text-xs text-muted-foreground">Account Number</span>
+                    <p className="font-medium text-foreground">{settings?.bankAccountNumber || "Loading..."}</p>
+                  </div>
+                  <div>
+                    <span className="text-xs text-muted-foreground">Bank Name</span>
+                    <p className="font-medium text-foreground">{settings?.bankName || "Loading..."}</p>
+                  </div>
+                </div>
+                
                 <div className="pt-6">
                   <Link href="/" className="group inline-flex items-center gap-4 text-sm tracking-widest uppercase border-b border-plum pb-1 text-plum hover:text-plum-dark transition-colors">
                     Back to Home <ArrowRight size={16} className="transform group-hover:translate-x-2 transition-transform duration-300" />
@@ -72,18 +105,15 @@ const SponsorContent = () => {
                 
                 {/* Select Tier */}
                 <div className="border-b border-border/40 pb-10">
-                  <label className="block text-xs font-bold text-muted-foreground mb-4 uppercase tracking-wider">
-                    Sponsorship Option
-                  </label>
                   <div className="relative">
                     <select 
                       value={tier}
                       onChange={(e) => setTier(e.target.value as keyof typeof sponsorTiers)}
                       className="w-full appearance-none bg-ivory border border-plum/20 px-6 py-5 text-xl font-display font-medium text-plum italic focus:outline-none focus:border-plum transition-colors cursor-pointer"
                     >
-                      {Object.entries(sponsorTiers).map(([name, details]) => (
+                      {Object.entries(sponsorTiers).map(([name]) => (
                         <option key={name} value={name}>
-                          {name} {details.price > 0 ? `— GH₵ ${details.price}` : ""}
+                          {name}
                         </option>
                       ))}
                     </select>
@@ -166,9 +196,10 @@ const SponsorContent = () => {
                 <div className="pt-8 flex flex-col items-center">
                   <button 
                     type="submit" 
-                    className="bg-plum text-white font-body font-medium px-12 py-5 tracking-widest uppercase text-sm hover:bg-wine transition-all duration-300 flex items-center justify-center gap-4 w-full sm:w-auto shadow-md hover-lift"
+                    disabled={isSubmitting}
+                    className="bg-plum text-white font-body font-medium px-12 py-5 tracking-widest uppercase text-sm hover:bg-wine transition-all duration-300 flex items-center justify-center gap-4 w-full sm:w-auto shadow-md hover-lift disabled:opacity-50"
                   >
-                    Proceed to Payment ({getPriceDisplay()}) <ArrowRight size={18} />
+                    {isSubmitting ? "Processing..." : `Proceed to Payment (${getPriceDisplay()})`} <ArrowRight size={18} />
                   </button>
                   
                   <div className="flex items-center gap-2 mt-6 text-muted-foreground font-light text-sm">
