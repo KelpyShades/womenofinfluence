@@ -494,10 +494,8 @@ const ApplyContent = () => {
               Seat Reserved Tentatively
             </h3>
             <p className="text-muted-foreground font-light text-base leading-relaxed max-w-sm mx-auto">
-              Your application for{" "}
-              <strong className="text-foreground">{packageName}</strong> has
-              been logged. Our enrollment dashboard has saved your details. We
-              have sent an email with the next steps to arrange your interview.
+              Thank you for applying to{" "}
+              <strong className="text-foreground">{packageName}</strong>. Kindly check your email for our update regarding your application.
             </p>
           </AnimatedSection>
         ) : (

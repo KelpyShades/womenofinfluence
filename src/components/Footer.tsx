@@ -2,9 +2,10 @@
 
 import Link from "next/link";
 import Image from "next/image";
-import { Heart, Mail } from "lucide-react";
+import { Heart, Mail, Shield, ArrowRight } from "lucide-react";
 import { useState } from "react";
 import { useMutation } from "convex/react";
+import { useQuery } from "convex-helpers/react/cache/hooks";
 import { api } from "../../convex/_generated/api";
 
 const InstagramIcon = ({ size = 16 }: { size?: number }) => (
@@ -62,6 +63,7 @@ const Footer = () => {
   const [email, setEmail] = useState("");
   const [status, setStatus] = useState<"idle" | "loading" | "success">("idle");
   const subscribe = useMutation(api.newsletter.subscribe);
+  const licenses = useQuery(api.licenses.getLicenses);
 
   const handleSubscribe = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -80,7 +82,7 @@ const Footer = () => {
   const socialLinks = [
     { icon: InstagramIcon, href: "https://www.instagram.com/women_of_influence_academy?utm_source=qr&igsh=dmw2YmVxY2E2c3I0", label: "Instagram" },
     { icon: YoutubeIcon, href: "https://youtube.com/@women_of_influence?feature=shared", label: "YouTube" },
-    { icon: TiktokIcon, href: "https://vt.tiktok.com/ZSCsbUncr/", label: "TikTok" },
+    { icon: TiktokIcon, href: "https://www.tiktok.com/@womenofinfluence.wia?_r=1&_t=ZS-98jPV6wwuG4", label: "TikTok" },
   ];
 
   return (
@@ -110,14 +112,16 @@ const Footer = () => {
             <h4 className="font-display font-semibold text-lg mb-4">
               Quick Links
             </h4>
-            <ul className="space-y-2.5">
+            <ul className="space-y-2.5 mb-6">
               {[
                 { name: "The Program", path: "/courses" },
                 { name: "Pillars", path: "/pillars" },
                 { name: "Gallery", path: "/gallery" },
                 { name: "Testimonials", path: "/testimonials" },
+                { name: "Resources", path: "/resources" },
                 { name: "Partnerships", path: "/partnerships" },
                 { name: "About Us", path: "/about" },
+                { name: "Licensing Information", path: "/licenses" },
                 { name: "Apply Now", path: "/apply" },
               ].map((link) => (
                 <li key={link.name}>
@@ -130,6 +134,27 @@ const Footer = () => {
                 </li>
               ))}
             </ul>
+
+            {/* Licensing Banner */}
+            <div className="bg-white/5 border border-white/10 p-4 rounded-xl max-w-xs">
+              <span className="block text-[9px] font-bold text-gold uppercase tracking-widest mb-1.5">
+                Licensed & Registered With
+              </span>
+              <div className="flex items-center gap-2 mb-2 text-primary-foreground/90">
+                <Shield size={14} className="text-gold shrink-0" />
+                <span className="text-xs font-medium leading-none truncate">
+                  {licenses && licenses.length > 0
+                    ? licenses.map(l => l.body).slice(0, 2).join(", ")
+                    : "Official Registries"}
+                </span>
+              </div>
+              <Link
+                href="/licenses"
+                className="inline-flex items-center gap-1 text-[11px] text-gold hover:text-white font-medium transition-colors"
+              >
+                View all licenses <ArrowRight size={10} />
+              </Link>
+            </div>
           </div>
 
           {/* Contact */}
@@ -178,8 +203,8 @@ const Footer = () => {
                 className="flex-1 px-4 py-2.5 rounded-full bg-primary-foreground/10 border border-primary-foreground/20 text-primary-foreground placeholder:text-primary-foreground/40 text-sm font-body focus:outline-none focus:border-gold"
                 disabled={status === "loading" || status === "success"}
               />
-              <button 
-                type="submit" 
+              <button
+                type="submit"
                 className="btn-gold text-xs px-5 py-2.5 disabled:opacity-50"
                 disabled={status === "loading" || status === "success" || !email}
               >

@@ -1,10 +1,11 @@
 import type { NextConfig } from "next";
+import { cwd } from "process";
 
 const nextConfig: NextConfig = {
   // Resolve the multiple lockfiles workspace root warning
 
   turbopack: {
-    root: "/home/kelpyshades/Documents/GitHub/womenofinfluence",
+    root: cwd(),
   },
   images: {
     remotePatterns: [

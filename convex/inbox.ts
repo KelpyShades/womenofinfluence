@@ -74,9 +74,16 @@ export const submitApplication = mutation({
 
     // Send confirmation email
     await ctx.scheduler.runAfter(0, api.emails.sendApplicationConfirmation, {
+      fullName: args.fullName,
       email: args.email,
-      name: args.fullName,
+      phone: args.phone,
+      country: args.country,
       packageName: args.packageName,
+      pillars: args.pillars,
+      whyJoin: args.whyJoin,
+      vision: args.vision,
+      referral: args.referral,
+      amount: args.amount,
     });
     
     return appId;

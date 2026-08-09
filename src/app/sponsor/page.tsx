@@ -1,6 +1,7 @@
 "use client";
 
-import { useState } from "react";
+import { useState, Suspense } from "react";
+import Link from "next/link";
 import { ArrowRight, ShieldCheck, CheckCircle2 } from "lucide-react";
 import AnimatedSection from "@/components/AnimatedSection";
 import { useMutation, useQuery } from "convex/react";
@@ -16,7 +17,6 @@ const SponsorContent = () => {
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const submitSponsorship = useMutation(api.inbox.submitSponsorship);
-  const settings = useQuery(api.globalSettings.getGlobalSettings);
   const [sponsorDetails, setSponsorDetails] = useState({
     name: "",
     email: "",
@@ -77,22 +77,6 @@ const SponsorContent = () => {
                 <p className="text-muted-foreground font-light text-lg leading-relaxed max-w-md mx-auto mb-4">
                   Sponsorship of <strong className="text-foreground">{getPriceDisplay()}</strong> initiated. We have sent an email with the bank account details for your transfer.
                 </p>
-                
-                <div className="bg-ivory border border-border/40 p-6 rounded-lg text-left max-w-md mx-auto space-y-3">
-                  <p className="text-xs uppercase tracking-widest font-bold text-plum">Bank Transfer Details</p>
-                  <div>
-                    <span className="text-xs text-muted-foreground">Account Name</span>
-                    <p className="font-medium text-foreground">{settings?.bankAccountName || "Loading..."}</p>
-                  </div>
-                  <div>
-                    <span className="text-xs text-muted-foreground">Account Number</span>
-                    <p className="font-medium text-foreground">{settings?.bankAccountNumber || "Loading..."}</p>
-                  </div>
-                  <div>
-                    <span className="text-xs text-muted-foreground">Bank Name</span>
-                    <p className="font-medium text-foreground">{settings?.bankName || "Loading..."}</p>
-                  </div>
-                </div>
                 
                 <div className="pt-6">
                   <Link href="/" className="group inline-flex items-center gap-4 text-sm tracking-widest uppercase border-b border-plum pb-1 text-plum hover:text-plum-dark transition-colors">
@@ -216,9 +200,6 @@ const SponsorContent = () => {
     </div>
   );
 };
-
-import { Suspense } from "react";
-import Link from "next/link";
 
 export default function SponsorPage() {
   return (
