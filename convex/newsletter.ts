@@ -23,7 +23,7 @@ export const subscribe = mutation({
       });
     }
 
-    // Always trigger the webhook action to Zapier
+    // Always trigger the webhook action to Make
     await ctx.scheduler.runAfter(0, api.emails.addSubscriberToResend, {
       email: args.email,
     });

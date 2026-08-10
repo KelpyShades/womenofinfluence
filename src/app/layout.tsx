@@ -6,6 +6,7 @@ import Footer from "@/components/Footer";
 import { ConvexClientProvider } from "@/components/ConvexClientProvider";
 import { ConvexQueryCacheProvider } from "convex-helpers/react/cache/provider";
 import { CachePreloader } from "@/components/CachePreloader";
+import { CurrencyProvider } from "@/context/CurrencyContext";
 
 export const metadata: Metadata = {
   title: "Women of Influence Academy",
@@ -22,12 +23,14 @@ export default function RootLayout({
       <body className="min-h-full flex flex-col font-body bg-background text-foreground">
         <ConvexClientProvider>
           <ConvexQueryCacheProvider expiration={300000}>
-            <CachePreloader />
-            <Navbar />
-            <main className="flex-1">
-              {children}
-            </main>
-            <Footer />
+            <CurrencyProvider>
+              <CachePreloader />
+              <Navbar />
+              <main className="flex-1">
+                {children}
+              </main>
+              <Footer />
+            </CurrencyProvider>
           </ConvexQueryCacheProvider>
         </ConvexClientProvider>
       </body>

@@ -5,13 +5,13 @@ import { v } from "convex/values";
 export const addSubscriberToResend = action({
   args: { email: v.string() },
   handler: async (ctx, args) => {
-    const webhookUrl = process.env.ZAPIER_NEWSLETTER_WEBHOOK;
+    const webhookUrl = process.env.MAKE_NEWSLETTER_WEBHOOK;
     if (!webhookUrl) {
-      console.warn("⚠️ ZAPIER_NEWSLETTER_WEBHOOK environment variable is not set. Skipping webhook.");
+      console.warn("⚠️ MAKE_NEWSLETTER_WEBHOOK environment variable is not set. Skipping webhook.");
       return;
     }
 
-    console.log(`📤 Sending newsletter subscription webhook to Zapier for: ${args.email}...`);
+    console.log(`📤 Sending newsletter subscription webhook to Make for: ${args.email}...`);
 
     try {
       const response = await fetch(webhookUrl, {
@@ -23,12 +23,12 @@ export const addSubscriberToResend = action({
           timestamp: Date.now(),
         }),
       });
-      console.log(`📥 Zapier responded with status: ${response.status} (${response.statusText})`);
+      console.log(`📥 Make responded with status: ${response.status} (${response.statusText})`);
       if (!response.ok) {
-        throw new Error(`Zapier returned status ${response.status}`);
+        throw new Error(`Make returned status ${response.status}`);
       }
     } catch (error) {
-      console.error("❌ Failed to send newsletter subscriber to Zapier:", error);
+      console.error("❌ Failed to send newsletter subscriber to Make:", error);
     }
   }
 });
@@ -45,15 +45,16 @@ export const sendApplicationConfirmation = action({
     vision: v.string(),
     referral: v.optional(v.string()),
     amount: v.number(),
+    currency: v.optional(v.string()),
   },
   handler: async (ctx, args) => {
-    const webhookUrl = process.env.ZAPIER_APPLICATION_WEBHOOK;
+    const webhookUrl = process.env.MAKE_NEWSLETTER_WEBHOOK;
     if (!webhookUrl) {
-      console.warn("⚠️ ZAPIER_APPLICATION_WEBHOOK environment variable is not set. Skipping webhook.");
+      console.warn("⚠️ MAKE_NEWSLETTER_WEBHOOK environment variable is not set. Skipping webhook.");
       return;
     }
 
-    console.log(`📤 Sending application webhook to Zapier for: ${args.fullName} (${args.email})...`);
+    console.log(`📤 Sending application webhook to Make for: ${args.fullName} (${args.email})...`);
 
     try {
       const response = await fetch(webhookUrl, {
@@ -65,12 +66,12 @@ export const sendApplicationConfirmation = action({
           timestamp: Date.now(),
         }),
       });
-      console.log(`📥 Zapier responded with status: ${response.status} (${response.statusText})`);
+      console.log(`📥 Make responded with status: ${response.status} (${response.statusText})`);
       if (!response.ok) {
-        throw new Error(`Zapier returned status ${response.status}`);
+        throw new Error(`Make returned status ${response.status}`);
       }
     } catch (error) {
-      console.error("❌ Failed to send application confirmation to Zapier:", error);
+      console.error("❌ Failed to send application confirmation to Make:", error);
     }
   }
 });
@@ -85,13 +86,13 @@ export const sendSponsorshipConfirmation = action({
     bankName: v.string(),
   },
   handler: async (ctx, args) => {
-    const webhookUrl = process.env.ZAPIER_SPONSORSHIP_WEBHOOK;
+    const webhookUrl = process.env.MAKE_SPONSORSHIP_WEBHOOK;
     if (!webhookUrl) {
-      console.warn("⚠️ ZAPIER_SPONSORSHIP_WEBHOOK environment variable is not set. Skipping webhook.");
+      console.warn("⚠️ MAKE_SPONSORSHIP_WEBHOOK environment variable is not set. Skipping webhook.");
       return;
     }
 
-    console.log(`📤 Sending sponsorship intent webhook to Zapier for: ${args.name} (${args.email})...`);
+    console.log(`📤 Sending sponsorship intent webhook to Make for: ${args.name} (${args.email})...`);
 
     try {
       const response = await fetch(webhookUrl, {
@@ -108,12 +109,12 @@ export const sendSponsorshipConfirmation = action({
           timestamp: Date.now(),
         }),
       });
-      console.log(`📥 Zapier responded with status: ${response.status} (${response.statusText})`);
+      console.log(`📥 Make responded with status: ${response.status} (${response.statusText})`);
       if (!response.ok) {
-        throw new Error(`Zapier returned status ${response.status}`);
+        throw new Error(`Make returned status ${response.status}`);
       }
     } catch (error) {
-      console.error("❌ Failed to send sponsorship confirmation to Zapier:", error);
+      console.error("❌ Failed to send sponsorship confirmation to Make:", error);
     }
   }
 });

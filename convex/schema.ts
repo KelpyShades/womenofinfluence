@@ -126,6 +126,7 @@ export default defineSchema({
     vision: v.string(),
     referral: v.optional(v.string()),
     amount: v.number(), // Amount paid
+    currency: v.optional(v.string()), // Currency used (e.g., GHS, USD)
     paymentReference: v.optional(v.string()), // Paystack reference
     paymentStatus: v.union(v.literal("pending"), v.literal("success"), v.literal("failed")),
   }),
@@ -135,6 +136,7 @@ export default defineSchema({
     email: v.string(),
     organization: v.optional(v.string()),
     amount: v.number(),
+    currency: v.optional(v.string()), // Currency used (e.g., GHS, USD)
     status: v.union(v.literal("pending"), v.literal("success"), v.literal("failed")),
   }),
   

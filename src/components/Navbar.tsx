@@ -6,6 +6,7 @@ import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { Menu, X } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
+import CurrencySwitcher from "./CurrencySwitcher";
 
 const navLinks = [
   { name: "Home", path: "/" },
@@ -60,7 +61,7 @@ const Navbar = () => {
           </Link>
 
           {/* Desktop nav */}
-          <div className="hidden lg:flex items-center gap-1">
+          <div className="hidden lg:flex items-center gap-2">
             {navLinks.map((link) => (
               <Link
                 key={link.path}
@@ -76,9 +77,12 @@ const Navbar = () => {
                 {link.name}
               </Link>
             ))}
+            <div className="ml-2 flex items-center">
+              <CurrencySwitcher isDark={!scrolled && isDarkHero} />
+            </div>
             <Link
               href="/apply"
-              className="btn-gold ml-3 text-sm px-6 py-2.5 uppercase tracking-wider"
+              className="btn-gold ml-2 text-sm px-6 py-2.5 uppercase tracking-wider"
             >
               Apply Now
             </Link>
@@ -118,6 +122,12 @@ const Navbar = () => {
                   {link.name}
                 </Link>
               ))}
+              
+              <div className="flex justify-between items-center px-4 py-3 border-t border-border mt-3">
+                <span className="text-xs uppercase tracking-wider text-muted-foreground font-semibold">Currency</span>
+                <CurrencySwitcher isDark={false} />
+              </div>
+
               <Link
                 href="/apply"
                 onClick={() => setIsOpen(false)}

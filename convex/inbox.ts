@@ -48,6 +48,7 @@ export const submitApplication = mutation({
     vision: v.string(),
     referral: v.optional(v.string()),
     amount: v.number(),
+    currency: v.optional(v.string()),
     paymentReference: v.optional(v.string()),
   },
   handler: async (ctx, args) => {
@@ -67,9 +68,9 @@ export const submitApplication = mutation({
         email: args.email,
         subscribedAt: Date.now(),
       });
-      await ctx.scheduler.runAfter(0, api.emails.addSubscriberToResend, {
-        email: args.email,
-      });
+      // Note: We do not trigger the newsletter webhook action here because the application submission
+      // will send an application confirmation webhook to the same shared newsletter webhook URL,
+      // avoiding duplicate triggers/interference.
     }
 
     // Send confirmation email
@@ -84,6 +85,7 @@ export const submitApplication = mutation({
       vision: args.vision,
       referral: args.referral,
       amount: args.amount,
+      currency: args.currency,
     });
     
     return appId;
@@ -96,6 +98,7 @@ export const submitSponsorship = mutation({
     email: v.string(),
     organization: v.optional(v.string()),
     amount: v.number(),
+    currency: v.optional(v.string()),
   },
   handler: async (ctx, args) => {
     const sponsorshipId = await ctx.db.insert("sponsorships", {
@@ -109,11 +112,26 @@ export const submitSponsorship = mutation({
     const bankAccountNumber = settings?.bankAccountNumber || "N/A";
     const bankName = settings?.bankName || "N/A";
 
+    const currencySymbols: Record<string, string> = {
+      GHS: "GH₵",
+      USD: "$",
+      NGN: "₦",
+      GBP: "£",
+      EUR: "€",
+      CAD: "CA$",
+      KES: "KSh"
+    };
+    const symbol = currencySymbols[args.currency || "GHS"] || (args.currency || "GH₵");
+    const amountDisplay = symbol + " " + args.amount.toLocaleString(undefined, {
+      minimumFractionDigits: ["USD", "GBP", "EUR", "CAD"].includes(args.currency || "GHS") ? 2 : 0,
+      maximumFractionDigits: ["USD", "GBP", "EUR", "CAD"].includes(args.currency || "GHS") ? 2 : 0,
+    });
+
     // Send sponsorship confirmation with bank details
     await ctx.scheduler.runAfter(0, api.emails.sendSponsorshipConfirmation, {
       email: args.email,
       name: args.name,
-      amountDisplay: "GH₵ " + args.amount,
+      amountDisplay,
       bankAccountName,
       bankAccountNumber,
       bankName,

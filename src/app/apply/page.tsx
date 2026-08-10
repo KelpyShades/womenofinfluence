@@ -8,6 +8,7 @@ import { useMutation } from "convex/react";
 import { useQuery } from "convex-helpers/react/cache/hooks";
 import { Skeleton } from "@/components/ui/skeleton";
 import { api } from "../../../convex/_generated/api";
+import { useCurrency } from "@/context/CurrencyContext";
 
 // Simple HTML/XSS escape sanitizer helper
 const sanitizeString = (val: string): string => {
@@ -89,6 +90,7 @@ type ApplicationFormData = z.infer<typeof applicationSchema>;
 const ApplyContent = () => {
   const settings = useQuery(api.globalSettings.getGlobalSettings);
   const submitApplication = useMutation(api.inbox.submitApplication);
+  const { currency, formatPrice, convertPrice } = useCurrency();
 
   const isSettingsLoading = settings === undefined;
 
@@ -204,7 +206,9 @@ const ApplyContent = () => {
 
     // Success payload ready for DB
     const validatedData = result.data;
-    const amount = packageName === "The Foundation" ? foundationSecure : fullExpSecure;
+    const baseAmount = packageName === "The Foundation" ? foundationTotal : fullExpTotal;
+    const amount = Number(convertPrice(baseAmount).toFixed(2));
+    const currencyCode = currency.code;
 
     try {
       await submitApplication({
@@ -218,6 +222,7 @@ const ApplyContent = () => {
         vision: validatedData.vision,
         referral: validatedData.referral,
         amount,
+        currency: currencyCode,
       });
       setIsSuccess(true);
     } catch (err) {
@@ -296,16 +301,25 @@ const ApplyContent = () => {
                     The Foundation
                   </h3>
                   <p className="text-[14px] tracking-widest uppercase font-semibold text-muted-foreground">
-                    Without Trip · Total GH₵ {isSettingsLoading ? <Skeleton className="h-4 w-12 inline-block" /> : foundationTotal}
+                    Without Trip · Total {isSettingsLoading ? <Skeleton className="h-4 w-12 inline-block" /> : formatPrice(foundationTotal)}
                   </p>
                 </div>
 
                 <div className="border-y border-border/40 py-4">
                   <div className="text-2xl font-display font-medium text-foreground">
-                    GH₵{" "}
-                    <span className="text-4xl text-plum font-semibold">
-                      {isSettingsLoading ? <Skeleton className="h-8 w-16 inline-block" /> : foundationSecure}
-                    </span>{" "}
+                    {isSettingsLoading ? (
+                      <Skeleton className="h-8 w-24 inline-block" />
+                    ) : (
+                      <>
+                        <span className="text-xl font-medium">{currency.symbol}</span>{" "}
+                        <span className="text-4xl text-plum font-semibold">
+                          {convertPrice(foundationSecure).toLocaleString("en-US", {
+                            minimumFractionDigits: ["USD", "GBP", "EUR", "CAD"].includes(currency.code) ? 2 : 0,
+                            maximumFractionDigits: ["USD", "GBP", "EUR", "CAD"].includes(currency.code) ? 2 : 0,
+                          })}
+                        </span>
+                      </>
+                    )}{" "}
                     <span className="text-sm font-body font-light text-muted-foreground">
                       to secure seat
                     </span>
@@ -321,19 +335,25 @@ const ApplyContent = () => {
                     <span className="font-light text-foreground/80">
                       🔐 Before Admission
                     </span>
-                    <span className="font-medium text-foreground">GH₵ {isSettingsLoading ? <Skeleton className="h-4 w-12 inline-block" /> : foundationSecure}</span>
+                    <span className="font-medium text-foreground">
+                      {isSettingsLoading ? <Skeleton className="h-4 w-12 inline-block" /> : formatPrice(foundationSecure)}
+                    </span>
                   </div>
                   <div className="flex justify-between text-sm">
                     <span className="font-light text-foreground/80">
                       📅 {isSettingsLoading ? <Skeleton className="h-4 w-16 inline-block" /> : foundationInstallment1Month}
                     </span>
-                    <span className="font-medium text-foreground">GH₵ {isSettingsLoading ? <Skeleton className="h-4 w-12 inline-block" /> : foundationInstallment1Amount}</span>
+                    <span className="font-medium text-foreground">
+                      {isSettingsLoading ? <Skeleton className="h-4 w-12 inline-block" /> : formatPrice(foundationInstallment1Amount)}
+                    </span>
                   </div>
                   <div className="flex justify-between text-sm">
                     <span className="font-light text-foreground/80">
                       📅 {isSettingsLoading ? <Skeleton className="h-4 w-16 inline-block" /> : foundationInstallment2Month}
                     </span>
-                    <span className="font-medium text-foreground">GH₵ {isSettingsLoading ? <Skeleton className="h-4 w-12 inline-block" /> : foundationInstallment2Amount}</span>
+                    <span className="font-medium text-foreground">
+                      {isSettingsLoading ? <Skeleton className="h-4 w-12 inline-block" /> : formatPrice(foundationInstallment2Amount)}
+                    </span>
                   </div>
                 </div>
 
@@ -387,16 +407,25 @@ const ApplyContent = () => {
                     The Full Experience
                   </h3>
                   <p className="text-[14px] tracking-widest uppercase font-semibold text-ivory/60">
-                    With 4-Day Accra Trip · Total GH₵ {isSettingsLoading ? <Skeleton className="h-4 w-12 inline-block bg-white/10" /> : fullExpTotal}
+                    With 4-Day Accra Trip · Total {isSettingsLoading ? <Skeleton className="h-4 w-12 inline-block bg-white/10" /> : formatPrice(fullExpTotal)}
                   </p>
                 </div>
 
                 <div className="border-y border-ivory/20 py-4">
                   <div className="text-2xl font-display font-medium text-ivory">
-                    GH₵{" "}
-                    <span className="text-4xl text-champagne font-semibold">
-                      {isSettingsLoading ? <Skeleton className="h-8 w-16 inline-block bg-white/10" /> : fullExpSecure}
-                    </span>{" "}
+                    {isSettingsLoading ? (
+                      <Skeleton className="h-8 w-24 inline-block bg-white/10" />
+                    ) : (
+                      <>
+                        <span className="text-xl font-medium">{currency.symbol}</span>{" "}
+                        <span className="text-4xl text-champagne font-semibold">
+                          {convertPrice(fullExpSecure).toLocaleString("en-US", {
+                            minimumFractionDigits: ["USD", "GBP", "EUR", "CAD"].includes(currency.code) ? 2 : 0,
+                            maximumFractionDigits: ["USD", "GBP", "EUR", "CAD"].includes(currency.code) ? 2 : 0,
+                          })}
+                        </span>
+                      </>
+                    )}{" "}
                     <span className="text-sm font-body font-light text-ivory/60">
                       to secure seat
                     </span>
@@ -412,17 +441,23 @@ const ApplyContent = () => {
                     <span className="font-light text-ivory/80">
                       🔐 Before Admission
                     </span>
-                    <span className="font-medium text-ivory">GH₵ {isSettingsLoading ? <Skeleton className="h-4 w-12 inline-block bg-white/10" /> : fullExpSecure}</span>
+                    <span className="font-medium text-ivory">
+                      {isSettingsLoading ? <Skeleton className="h-4 w-12 inline-block bg-white/10" /> : formatPrice(fullExpSecure)}
+                    </span>
                   </div>
                   <div className="flex justify-between text-sm">
                     <span className="font-light text-ivory/80">📅 {isSettingsLoading ? <Skeleton className="h-4 w-16 inline-block bg-white/10" /> : fullExpInstallment1Month}</span>
-                    <span className="font-medium text-ivory">GH₵ {isSettingsLoading ? <Skeleton className="h-4 w-12 inline-block bg-white/10" /> : fullExpInstallment1Amount}</span>
+                    <span className="font-medium text-ivory">
+                      {isSettingsLoading ? <Skeleton className="h-4 w-12 inline-block bg-white/10" /> : formatPrice(fullExpInstallment1Amount)}
+                    </span>
                   </div>
                   <div className="flex justify-between text-sm">
                     <span className="font-light text-ivory/80">
                       📅 {isSettingsLoading ? <Skeleton className="h-4 w-16 inline-block bg-white/10" /> : fullExpInstallment2Month}
                     </span>
-                    <span className="font-medium text-ivory">GH₵ {isSettingsLoading ? <Skeleton className="h-4 w-12 inline-block bg-white/10" /> : fullExpInstallment2Amount}</span>
+                    <span className="font-medium text-ivory">
+                      {isSettingsLoading ? <Skeleton className="h-4 w-12 inline-block bg-white/10" /> : formatPrice(fullExpInstallment2Amount)}
+                    </span>
                   </div>
                 </div>
 
@@ -530,17 +565,17 @@ const ApplyContent = () => {
                     onChange={(e) =>
                       setPackageName(
                         e.target.value as
-                          | "The Foundation"
-                          | "The Full Experience",
+                        | "The Foundation"
+                        | "The Full Experience",
                       )
                     }
                     className="w-full bg-ivory border border-border/30 px-4 py-3 rounded-lg text-sm text-foreground focus:outline-none focus:border-plum cursor-pointer appearance-none"
                   >
                     <option value="The Foundation">
-                      The Foundation (Without Trip) — GH₵ {foundationTotal}
+                      The Foundation (Without Trip) — {isSettingsLoading ? "Loading..." : formatPrice(foundationTotal)}
                     </option>
                     <option value="The Full Experience">
-                      The Full Experience (With Accra Trip) — GH₵ {fullExpTotal}
+                      The Full Experience (With Accra Trip) — {isSettingsLoading ? "Loading..." : formatPrice(fullExpTotal)}
                     </option>
                   </select>
                   <div className="pointer-events-none absolute inset-y-0 right-4 flex items-center text-plum">
@@ -673,11 +708,10 @@ const ApplyContent = () => {
                         key={pillar}
                         type="button"
                         onClick={() => handlePillarToggle(pillar)}
-                        className={`text-left px-4 py-3 rounded-lg border text-sm font-normal transition-all flex items-center justify-between ${
-                          isSelected
+                        className={`text-left px-4 py-3 rounded-lg border text-sm font-normal transition-all flex items-center justify-between ${isSelected
                             ? "border-plum bg-plum/5 text-plum font-normal"
                             : "border-border/40 hover:border-plum/30 bg-transparent text-foreground"
-                        }`}
+                          }`}
                       >
                         <span>{pillar}</span>
                         {isSelected && (

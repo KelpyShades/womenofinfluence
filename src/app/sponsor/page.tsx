@@ -4,8 +4,9 @@ import { useState, Suspense } from "react";
 import Link from "next/link";
 import { ArrowRight, ShieldCheck, CheckCircle2 } from "lucide-react";
 import AnimatedSection from "@/components/AnimatedSection";
-import { useMutation, useQuery } from "convex/react";
+import { useMutation } from "convex/react";
 import { api } from "../../../convex/_generated/api";
+import { useCurrency } from "@/context/CurrencyContext";
 
 const sponsorTiers = {
   "Custom Contribution": { price: 0, desc: "Enter a custom amount to support our general scholarship fund." }
@@ -16,6 +17,7 @@ const SponsorContent = () => {
   const [customAmount, setCustomAmount] = useState("");
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const { currency } = useCurrency();
   const submitSponsorship = useMutation(api.inbox.submitSponsorship);
   const [sponsorDetails, setSponsorDetails] = useState({
     name: "",
@@ -24,7 +26,7 @@ const SponsorContent = () => {
   });
 
   const getPriceDisplay = () => {
-    return customAmount ? `GH₵ ${customAmount}` : "Custom Amount";
+    return customAmount ? `${currency.symbol} ${customAmount}` : "Custom Amount";
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -38,6 +40,7 @@ const SponsorContent = () => {
         email: sponsorDetails.email,
         organization: sponsorDetails.org || undefined,
         amount: Number(customAmount),
+        currency: currency.code,
       });
       setIsSubmitted(true);
     } catch (error) {
@@ -116,18 +119,28 @@ const SponsorContent = () => {
                 {tier === "Custom Contribution" && (
                   <AnimatedSection>
                     <div>
-                      <label className="block text-xs font-bold text-muted-foreground/80 mb-2 uppercase tracking-wider">
-                        Sponsorship Amount (GH₵) *
-                      </label>
-                      <input 
-                        required 
-                        type="number" 
-                        min="1"
-                        value={customAmount}
-                        onChange={(e) => setCustomAmount(e.target.value)}
-                        placeholder="Enter custom amount" 
-                        className="w-full pb-4 border-b border-border/40 bg-transparent text-foreground font-light text-lg focus:outline-none focus:border-plum placeholder:text-muted-foreground/30 transition-colors" 
-                      />
+                      <div className="flex justify-between items-center mb-4">
+                        <label className="block text-xs font-bold text-muted-foreground/80 uppercase tracking-wider">
+                          Sponsorship Amount *
+                        </label>
+                        <span className="text-[10px] font-semibold tracking-wider text-plum uppercase">
+                          Sponsoring in {currency.label}
+                        </span>
+                      </div>
+                      <div className="flex items-end gap-3 pb-4 border-b border-border/40">
+                        <span className="text-foreground/80 font-medium text-lg shrink-0 select-none pb-0.5">
+                          {currency.symbol}
+                        </span>
+                        <input 
+                          required 
+                          type="number" 
+                          min="1"
+                          value={customAmount}
+                          onChange={(e) => setCustomAmount(e.target.value)}
+                          placeholder="0" 
+                          className="w-full bg-transparent text-foreground font-light text-lg focus:outline-none placeholder:text-muted-foreground/30" 
+                        />
+                      </div>
                     </div>
                   </AnimatedSection>
                 )}
