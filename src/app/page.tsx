@@ -77,6 +77,7 @@ const Index = () => {
                 src={heroImage}
                 alt="Elegant portrait of a woman leader"
                 fill
+                sizes="(max-width: 1024px) 100vw, 42vw"
                 priority
                 className="absolute inset-0 w-full h-full object-cover rounded-t-[10rem] shadow-2xl"
               />
