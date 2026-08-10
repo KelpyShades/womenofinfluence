@@ -40,7 +40,6 @@ export const getAdmins = adminQuery({
   handler: async (ctx) => {
     const roles = await ctx.db
       .query("userRoles")
-      .withIndex("by_id")
       .filter((q) => q.eq(q.field("role"), "admin"))
       .collect();
       
@@ -77,7 +76,6 @@ export const removeAdmin = adminMutation({
     // Check if it's the last admin
     const admins = await ctx.db
       .query("userRoles")
-      .withIndex("by_id")
       .filter((q) => q.eq(q.field("role"), "admin"))
       .collect();
       

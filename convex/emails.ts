@@ -1,124 +1,120 @@
 "use node";
 import { action } from "./_generated/server";
 import { v } from "convex/values";
-import { Resend } from "@convex-dev/resend";
-import { Resend as ResendSDK } from "resend";
-import { components } from "./_generated/api";
-
-const resend = new Resend(components.resend, { testMode: false });
 
 export const addSubscriberToResend = action({
   args: { email: v.string() },
   handler: async (ctx, args) => {
-    // You do not need process.env checks anymore because the component handles missing envs or we can just let it attempt to send.
-    // If the component requires RESEND_API_KEY, it'll use the environment variable automatically.
-    
-    const resendSdk = new ResendSDK(process.env.RESEND_API_KEY);
-    
-    if (process.env.RESEND_AUDIENCE_ID) {
-      try {
-        await resendSdk.contacts.create({
-          email: args.email,
-          unsubscribed: false,
-          audienceId: process.env.RESEND_AUDIENCE_ID,
-        });
-      } catch (error) {
-        console.error("Failed to add contact to Resend Audience:", error);
-      }
-    } else {
-      console.warn("RESEND_AUDIENCE_ID is missing. Sending welcome email but skipping audience addition.");
+    const webhookUrl = process.env.MAKE_NEWSLETTER_WEBHOOK;
+    if (!webhookUrl) {
+      console.warn("⚠️ MAKE_NEWSLETTER_WEBHOOK environment variable is not set. Skipping webhook.");
+      return;
     }
-    
+
+    console.log(`📤 Sending newsletter subscription webhook to Make for: ${args.email}...`);
+
     try {
-      await resend.sendEmail(ctx, {
-        from: "Women of Influence <onboarding@resend.dev>",
-        to: args.email,
-        subject: "Welcome to Women of Influence Academy",
-        html: "<p>Thank you for subscribing to our newsletter! We will be sharing updates and opportunities with you soon.</p>"
+      const response = await fetch(webhookUrl, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          email: args.email,
+          event: "newsletter_subscribed",
+          timestamp: Date.now(),
+        }),
       });
+      console.log(`📥 Make responded with status: ${response.status} (${response.statusText})`);
+      if (!response.ok) {
+        throw new Error(`Make returned status ${response.status}`);
+      }
     } catch (error) {
-      console.error("Failed to add subscriber to resend", error);
+      console.error("❌ Failed to send newsletter subscriber to Make:", error);
     }
   }
 });
 
 export const sendApplicationConfirmation = action({
-  args: { 
-    email: v.string(), 
-    name: v.string(), 
-    packageName: v.string() 
+  args: {
+    fullName: v.string(),
+    email: v.string(),
+    phone: v.string(),
+    country: v.string(),
+    packageName: v.string(),
+    pillars: v.array(v.string()),
+    whyJoin: v.string(),
+    vision: v.string(),
+    referral: v.optional(v.string()),
+    amount: v.number(),
+    currency: v.optional(v.string()),
   },
   handler: async (ctx, args) => {
-    const resendSdk = new ResendSDK(process.env.RESEND_API_KEY);
-    
-    if (process.env.RESEND_AUDIENCE_ID) {
-      try {
-        await resendSdk.contacts.create({
-          email: args.email,
-          firstName: args.name.split(" ")[0],
-          lastName: args.name.split(" ").slice(1).join(" "),
-          unsubscribed: false,
-          audienceId: process.env.RESEND_AUDIENCE_ID,
-        });
-      } catch (error) {
-        console.error("Failed to add contact to Resend Audience:", error);
-      }
-    } else {
-      console.warn("RESEND_AUDIENCE_ID is missing. Skipping audience addition.");
+    const webhookUrl = process.env.MAKE_NEWSLETTER_WEBHOOK;
+    if (!webhookUrl) {
+      console.warn("⚠️ MAKE_NEWSLETTER_WEBHOOK environment variable is not set. Skipping webhook.");
+      return;
     }
-    
+
+    console.log(`📤 Sending application webhook to Make for: ${args.fullName} (${args.email})...`);
+
     try {
-      await resend.sendEmail(ctx, {
-        from: "Women of Influence <onboarding@resend.dev>",
-        to: args.email,
-        subject: "Your Application to WIA is Received",
-        html: `
-          <h3>Hello ${args.name},</h3>
-          <p>Your application for <strong>${args.packageName}</strong> has been received successfully.</p>
-          <p>Our enrollment dashboard has saved your details. We will be in touch shortly with the next steps to arrange your interview.</p>
-          <br/>
-          <p>Warm regards,<br/>Women of Influence Academy</p>
-        `
+      const response = await fetch(webhookUrl, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          ...args,
+          event: "application_submitted",
+          timestamp: Date.now(),
+        }),
       });
+      console.log(`📥 Make responded with status: ${response.status} (${response.statusText})`);
+      if (!response.ok) {
+        throw new Error(`Make returned status ${response.status}`);
+      }
     } catch (error) {
-      console.error("Failed to send application confirmation", error);
+      console.error("❌ Failed to send application confirmation to Make:", error);
     }
   }
 });
 
 export const sendSponsorshipConfirmation = action({
-  args: { 
-    email: v.string(), 
-    name: v.string(), 
+  args: {
+    email: v.string(),
+    name: v.string(),
     amountDisplay: v.string(),
     bankAccountName: v.string(),
     bankAccountNumber: v.string(),
     bankName: v.string(),
   },
   handler: async (ctx, args) => {
-    
+    const webhookUrl = process.env.MAKE_SPONSORSHIP_WEBHOOK;
+    if (!webhookUrl) {
+      console.warn("⚠️ MAKE_SPONSORSHIP_WEBHOOK environment variable is not set. Skipping webhook.");
+      return;
+    }
+
+    console.log(`📤 Sending sponsorship intent webhook to Make for: ${args.name} (${args.email})...`);
+
     try {
-      await resend.sendEmail(ctx, {
-        from: "Women of Influence <onboarding@resend.dev>",
-        to: args.email,
-        subject: "Thank You For Your Sponsorship Intent",
-        html: `
-          <h3>Hello ${args.name},</h3>
-          <p>Thank you for initiating a sponsorship of <strong>${args.amountDisplay}</strong>.</p>
-          <p>Your support directly enables qualified women to receive high-level leadership training.</p>
-          <p>Please complete your contribution by transferring to the following bank account:</p>
-          <ul>
-            <li><strong>Account Name:</strong> ${args.bankAccountName}</li>
-            <li><strong>Account Number:</strong> ${args.bankAccountNumber}</li>
-            <li><strong>Bank Name:</strong> ${args.bankName}</li>
-          </ul>
-          <p>Once you have made the transfer, please reply to this email with your receipt so we can finalize the transaction.</p>
-          <br/>
-          <p>Warm regards,<br/>Women of Influence Academy</p>
-        `
+      const response = await fetch(webhookUrl, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          email: args.email,
+          name: args.name,
+          amountDisplay: args.amountDisplay,
+          bankAccountName: args.bankAccountName,
+          bankAccountNumber: args.bankAccountNumber,
+          bankName: args.bankName,
+          event: "sponsorship_intent_submitted",
+          timestamp: Date.now(),
+        }),
       });
+      console.log(`📥 Make responded with status: ${response.status} (${response.statusText})`);
+      if (!response.ok) {
+        throw new Error(`Make returned status ${response.status}`);
+      }
     } catch (error) {
-      console.error("Failed to send sponsorship confirmation", error);
+      console.error("❌ Failed to send sponsorship confirmation to Make:", error);
     }
   }
 });
