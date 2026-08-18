@@ -16,7 +16,7 @@ export const createInvite = adminMutation({
     // Set expiration to 24 hours from now
     const expiresAt = Date.now() + 24 * 60 * 60 * 1000;
 
-    const inviteId = await ctx.db.insert("invites", {
+    await ctx.db.insert("invites", {
       email: args.email,
       token,
       expiresAt,
